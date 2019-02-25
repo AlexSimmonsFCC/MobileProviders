@@ -236,7 +236,7 @@ require([
     );
     var classDef = new ClassBreaksDefinition();
     classDef.classificationField = app.currentAttribute;
-    classDef.classificationMethod = "quantile";
+    classDef.classificationMethod = "natural-breaks";
     classDef.breakCount = 6;
     classDef.baseSymbol = app.sfs;
 
