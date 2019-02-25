@@ -102,54 +102,7 @@ require([
     var yearDp = document.getElementById("YR");
     var monthDp = document.getElementById("MNTH");
     var filterButton = document.getElementById('filterBtn');
-    var Button1 = document.getElementById('B1');
-    var Button2 = document.getElementById('B2');
-    var Button3 = document.getElementById('B3');
 
-     Button1.addEventListener('click', function(e){
-      app.map.removeLayer(app.wash);
-      app.wash = new FeatureLayer(app.OverallURL, {
-      "id": "Washington",
-      "infoTemplate": app.popupTemplate,
-      "outFields": app.outFields,
-      "opacity": 0.8
-    })
-     app.defaultFrom = Color.fromHex("#ff0000");
-     app.defaultTo = Color.fromHex("#660000");
-     createRenderer("TtoV");
-     app.map.addLayer(app.wash);
-     app.wash.refresh();
-    });
-    
-    Button2.addEventListener('click', function(e){
-      app.map.removeLayer(app.wash);
-      app.wash = new FeatureLayer(app.PrePaidURL, {
-      "id": "Washington",
-      "infoTemplate": app.popupTemplate,
-      "outFields": app.outFields,
-      "opacity": 0.8
-    })
-     app.defaultFrom = Color.fromHex("#ff0000");
-     app.defaultTo = Color.fromHex("#660000");
-     createRenderer("TtoV");
-     app.map.addLayer(app.wash);
-     app.wash.refresh();
-    });
- 
-    Button3.addEventListener('click', function(e){
-      app.map.removeLayer(app.wash);
-      app.wash = new FeatureLayer(app.PostPaidURL, {
-      "id": "Washington",
-      "infoTemplate": app.popupTemplate,
-      "outFields": app.outFields,
-      "opacity": 0.8
-    })
-     app.defaultFrom = Color.fromHex("#ff0000");
-     app.defaultTo = Color.fromHex("#660000");
-     createRenderer("TtoV");
-     app.map.addLayer(app.wash);
-     app.wash.refresh();
-    });
     
     
     
