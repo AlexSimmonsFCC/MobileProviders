@@ -46,7 +46,7 @@ require([
   app.map.addLayer(ref);
 
   // various info for the feature layer
-  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer";
+  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
   app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.outFields = ["TtoV", "TtoS","TtoA","TtoO","MarketName"];
   app.currentAttribute = "TtoV";
