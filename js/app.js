@@ -117,14 +117,16 @@ require([
       "id": "counties",
       "infoTemplate": app.popupTemplate,
       "outFields": app.outFields,
-      "opacity": 0.8
+      "opacity": 0.8,
+       maxScale: 1155581.108577
     });
 
         tractLayer = new FeatureLayer(app.tracts, {
       "id": "tracts",
       "infoTemplate": app.popupTemplate,
       "outFields": app.outFields,
-      "opacity": 0.8
+      "opacity": 0.8,
+      minScale: 577790.55428
     });
 
         map.addLayer(countyLayer);
