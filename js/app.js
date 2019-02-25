@@ -72,23 +72,18 @@ require([
     app.wash = new FeatureLayer(app.OverallURL, {
       "id": "counties",
       "infoTemplate": app.popupTemplate,
-      "outFields": app.outFields,
       "opacity": 0.8,
       maxScale: 1155581.108577
-    });
-    
-      // create a feature layer 
-  // wait for map to load so the map's extent is available
-  app.map.on("load", function () {
+    }
+     
+     {
     app.wash = new FeatureLayer(app.PrePaidURL, {
       "id": "tracts",
       "infoTemplate": app.popupTemplate,
-      "outFields": app.outFields,
       "opacity": 0.8,
-      maxScale: 1155581.108577,
       minScale: 577790.554289
     });
-    
+
     
     
     
