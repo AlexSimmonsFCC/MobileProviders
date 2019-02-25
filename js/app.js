@@ -48,7 +48,7 @@ require([
   app.map.addLayer(ref);
 
   // various info for the feature layer
-  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer";
   app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity","Geography"];
   app.currentAttribute = "C_TotLat_1";
