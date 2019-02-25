@@ -46,9 +46,8 @@ require([
   app.map.addLayer(ref);
 
   // various info for the feature layer
-  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/CMA_Full/FeatureServer/0";
-  app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/CMA_Verizon_Prepaid/FeatureServer/0";
-  app.PostPaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/CMA_Verizon_Postpaid/FeatureServer/0";
+  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/US_Counties/FeatureServer/0";
+  app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.outFields = ["TtoV", "TtoS","TtoA","TtoO","MarketName"];
   app.currentAttribute = "TtoV";
   app.popupTemplate = new PopupTemplate({
@@ -71,11 +70,33 @@ require([
   // wait for map to load so the map's extent is available
   app.map.on("load", function () {
     app.wash = new FeatureLayer(app.OverallURL, {
-      "id": "Washington",
+      "id": "counties",
       "infoTemplate": app.popupTemplate,
       "outFields": app.outFields,
-      "opacity": 0.8
+      "opacity": 0.8,
+      maxScale: 1155581.108577
     });
+    
+      // create a feature layer 
+  // wait for map to load so the map's extent is available
+  app.map.on("load", function () {
+    app.wash = new FeatureLayer(app.PrePaidURL, {
+      "id": "tracts",
+      "infoTemplate": app.popupTemplate,
+      "outFields": app.outFields,
+      "opacity": 0.8,
+      maxScale: 1155581.108577,
+      minScale: 577790.554289
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
           // show selected attribute on click
