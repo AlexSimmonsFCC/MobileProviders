@@ -51,7 +51,7 @@ require([
   app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
   app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity","Geography"];
-  app.currentAttribute = "C_TotLatPo";
+  app.currentAttribute = "C_TotLat_1";
   app.popupTemplate = new PopupTemplate({
     title: "{Geography}",
     fieldInfos: [{
@@ -110,11 +110,11 @@ require([
     app.map.addLayer(app.wash2);
 
     // colors for the renderer
-    app.defaultFrom = Color.fromHex("#ff0000");
-    app.defaultTo = Color.fromHex("#660000");
+    app.defaultFrom = Color.fromHex("#19190C");
+    app.defaultTo = Color.fromHex("#6B0000");
 
 
-    createRenderer("C_TotLatPo");
+    createRenderer("C_TotLat_1");
 
 
     var yearDp = document.getElementById("YR");
@@ -252,7 +252,7 @@ require([
     var classDef = new ClassBreaksDefinition();
     classDef.classificationField = app.currentAttribute;
     classDef.classificationMethod = "quantile";
-    classDef.breakCount = 4;
+    classDef.breakCount = 10;
     classDef.baseSymbol = app.sfs;
 
     var colorRamp = new AlgorithmicColorRamp();
