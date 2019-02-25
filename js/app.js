@@ -74,10 +74,10 @@ require([
       "infoTemplate": app.popupTemplate,
       "opacity": 0.8,
       maxScale: 1155581.108577
-    };
+    });
      
      {
-    app.wash = new FeatureLayer(app.PrePaidURL, {
+    app.wash2 = new FeatureLayer(app.PrePaidURL, {
       "id": "tracts",
       "infoTemplate": app.popupTemplate,
       "opacity": 0.8,
@@ -106,6 +106,7 @@ require([
           }); 
 
     app.map.addLayer(app.wash);
+    app.map.addLayer(app.wash2);
 
     // colors for the renderer
     app.defaultFrom = Color.fromHex("#ff0000");
