@@ -29,10 +29,12 @@ require([
   // set up an object to use as a lookup table to convert from terse field
   // names to more user friendly field names
   app.fields = {
-    "TtoV": "Verizon to Verizon",
-    "TtoS": "Verizon to Sprint",
-    "TtoA": "Verison to AT&T",
-    "TtoO": "Verizon to Other"
+    "C_TotLatPo": "Latino Population",
+    "C_TotLat_1": "Percent Latino Population",
+    "C_TotPop": "County PopulationT",
+    "IncomeHH": "Household Income",
+    "PopDensity": "Population Density",
+    "Geography": "County Name"
   };
 
   app.map = new Map("map", {
@@ -48,10 +50,10 @@ require([
   // various info for the feature layer
   app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
   app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
-  app.outFields = ["TtoV", "TtoS","TtoA","TtoO","MarketName"];
-  app.currentAttribute = "TtoV";
+  app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity","Geography"];
+  app.currentAttribute = "C_TotLatPo";
   app.popupTemplate = new PopupTemplate({
-    title: "{MarketName}",
+    title: "{Geography}",
     fieldInfos: [{
       "fieldName": app.currentAttribute,
       "label": app.fields[app.currentAttribute],
@@ -112,7 +114,7 @@ require([
     app.defaultTo = Color.fromHex("#660000");
 
 
-    createRenderer("TtoV");
+    createRenderer("C_TotLatPo");
 
 
     var yearDp = document.getElementById("YR");
