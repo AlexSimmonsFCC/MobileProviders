@@ -109,8 +109,9 @@ require([
     app.map.addLayer(app.wash);
     app.map.addLayer(app.wash2);
 
+   
     // colors for the renderer
-    app.defaultFrom = Color.fromHex("#19190C");
+    app.defaultFrom = Color.fromHex("#FFFF80");
     app.defaultTo = Color.fromHex("#6B0000");
 
 
@@ -121,22 +122,6 @@ require([
     var monthDp = document.getElementById("MNTH");
     var filterButton = document.getElementById('filterBtn');
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
 
 
@@ -252,7 +237,7 @@ require([
     var classDef = new ClassBreaksDefinition();
     classDef.classificationField = app.currentAttribute;
     classDef.classificationMethod = "quantile";
-    classDef.breakCount = 10;
+    classDef.breakCount = 6;
     classDef.baseSymbol = app.sfs;
 
     var colorRamp = new AlgorithmicColorRamp();
