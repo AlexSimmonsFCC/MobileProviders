@@ -46,8 +46,9 @@ require([
   app.map.addLayer(ref);
 
   // various info for the feature layer
-  app.tracts = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/Broadband/FeatureServer/0";
-  app.counties = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/US_Counties/FeatureServer";
+  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/CMA_Full/FeatureServer/0";
+  app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/CMA_Verizon_Prepaid/FeatureServer/0";
+  app.PostPaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/CMA_Verizon_Postpaid/FeatureServer/0";
   app.outFields = ["TtoV", "TtoS","TtoA","TtoO","MarketName"];
   app.currentAttribute = "TtoV";
   app.popupTemplate = new PopupTemplate({
@@ -63,6 +64,7 @@ require([
     }],
     showAttachments: true
   });
+
 
 
   // create a feature layer 
@@ -100,46 +102,54 @@ require([
     var yearDp = document.getElementById("YR");
     var monthDp = document.getElementById("MNTH");
     var filterButton = document.getElementById('filterBtn');
+    var Button1 = document.getElementById('B1');
+    var Button2 = document.getElementById('B2');
+    var Button3 = document.getElementById('B3');
 
-
-
-
-    var curVisible = [];
-    
-       var layers = map.getLayersVisibleAtScale(map.getScale());
-
-        while (layers.length > 1) {
-            map.removeLayer(map.getLayer(map.layerIds[1]));
-            layers = map.getLayersVisibleAtScale(map.getScale());
-        };
-
-        countyLayer = new FeatureLayer(app.counties, {
-      "id": "counties",
+     Button1.addEventListener('click', function(e){
+      app.map.removeLayer(app.wash);
+      app.wash = new FeatureLayer(app.OverallURL, {
+      "id": "Washington",
       "infoTemplate": app.popupTemplate,
       "outFields": app.outFields,
-      "opacity": 0.8,
-       maxScale: 1155581.108577
+      "opacity": 0.8
+    })
+     app.defaultFrom = Color.fromHex("#ff0000");
+     app.defaultTo = Color.fromHex("#660000");
+     createRenderer("TtoV");
+     app.map.addLayer(app.wash);
+     app.wash.refresh();
     });
-
-        tractLayer = new FeatureLayer(app.tracts, {
-      "id": "tracts",
+    
+    Button2.addEventListener('click', function(e){
+      app.map.removeLayer(app.wash);
+      app.wash = new FeatureLayer(app.PrePaidURL, {
+      "id": "Washington",
       "infoTemplate": app.popupTemplate,
       "outFields": app.outFields,
-      "opacity": 0.8,
-      minScale: 577790.55428
+      "opacity": 0.8
+    })
+     app.defaultFrom = Color.fromHex("#ff0000");
+     app.defaultTo = Color.fromHex("#660000");
+     createRenderer("TtoV");
+     app.map.addLayer(app.wash);
+     app.wash.refresh();
     });
-
-        map.addLayer(countyLayer);
-        map.addLayer(tractLayer);
-
-        countyLayer.setVisibleLayers(curVisible);
-        tractLayer.setVisibleLayers(curVisible);
-
-        legend.refresh([{
-            "layer": countyLayer
-        }, {
-            "layer": tractLayer
-        }]);
+ 
+    Button3.addEventListener('click', function(e){
+      app.map.removeLayer(app.wash);
+      app.wash = new FeatureLayer(app.PostPaidURL, {
+      "id": "Washington",
+      "infoTemplate": app.popupTemplate,
+      "outFields": app.outFields,
+      "opacity": 0.8
+    })
+     app.defaultFrom = Color.fromHex("#ff0000");
+     app.defaultTo = Color.fromHex("#660000");
+     createRenderer("TtoV");
+     app.map.addLayer(app.wash);
+     app.wash.refresh();
+    });
     
     
     
@@ -149,29 +159,11 @@ require([
     
     
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
     
     
 
