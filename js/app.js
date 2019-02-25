@@ -74,7 +74,7 @@ require([
       "infoTemplate": app.popupTemplate,
       "opacity": 0.8,
       maxScale: 1155581.108577
-    }
+    };
      
      {
     app.wash = new FeatureLayer(app.PrePaidURL, {
