@@ -75,8 +75,7 @@ require([
       "opacity": 0.8,
       maxScale: 1155581.108577
     });
-     
-     {
+
     app.wash2 = new FeatureLayer(app.PrePaidURL, {
       "id": "tracts",
       "infoTemplate": app.popupTemplate,
