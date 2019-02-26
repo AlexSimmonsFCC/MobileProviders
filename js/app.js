@@ -33,7 +33,7 @@ require([
     "C_TotLat_1": "Percent Latino Population",
     "C_TotPop": "County Population",
     "IncomeHH": "Household Income",
-    "PopDensity": "Population Density",
+    "PopDensity": "Population Density"
   };
 
   app.map = new Map("map", {
@@ -52,7 +52,7 @@ require([
   app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography"];
   app.currentAttribute = "C_TotLat_1";
   app.popupTemplate = new PopupTemplate({
-    title: "{Geography}" + "Hi",
+    title: "{Geography}",
     fieldInfos: [{
       "fieldName": app.currentAttribute,
       "label": app.fields[app.currentAttribute]+ ":",
