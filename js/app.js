@@ -96,7 +96,7 @@ require([
 
           // show selected attribute on click
           app.mapClick = app.wash.on("click", function(evt) {
-            var name = evt.graphic.attributes.NAME + " County!",
+            var name = evt.graphic.attributes.Geography,
                 ca = app.currentAttribute,
                 content = app.fields[ca] + ": " + number.format(evt.graphic.attributes[ca]);
             app.map.infoWindow.setTitle(name);
@@ -197,7 +197,7 @@ require([
     "items": []
   };
   arrayUtils.forEach(app.outFields, function (f) {
-    if (arrayUtils.indexOf(f.split(" "), "MarketName") == -1) { // exclude attrs that contain "NAME"
+    if (arrayUtils.indexOf(f.split(" "), "Geography") == -1) { // exclude attrs that contain "NAME"
       fieldNames.items.push({
         "name": app.fields[f],
         "value": f
@@ -264,7 +264,7 @@ require([
     app.map.infoWindow.hide();
     delete app.popupTemplate;
     app.popupTemplate = new PopupTemplate({
-      title: "{cma} County!",
+      title: "{Geography}",
       fieldInfos: [{
         "fieldName": ch,
         "label": app.fields[ch],
