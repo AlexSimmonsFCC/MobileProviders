@@ -52,7 +52,7 @@ require([
   app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography"];
   app.currentAttribute = "C_TotLat_1";
   app.popupTemplate = new PopupTemplate({
-    title: "{Geography}",
+    title: "{Geography}" + "Hi",
     fieldInfos: [{
       "fieldName": app.currentAttribute,
       "label": app.fields[app.currentAttribute]+ ":",
