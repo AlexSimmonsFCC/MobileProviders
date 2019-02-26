@@ -78,7 +78,7 @@ require([
       maxScale: 1155581.108577
     });
 
-    app.wash2 = new  ArcGISTiledMapServiceLayer (app.PrePaidURL, {
+    app.wash2 = new  FeatureLayer (app.PrePaidURL, {
       "id": "tracts",
       "infoTemplate": app.popupTemplate,
       "opacity": 0.8,
