@@ -31,7 +31,7 @@ require([
   app.fields = {
     "C_TotLatPo": "Latino Population",
     "C_TotLat_1": "Percent Latino Population",
-    "C_TotPop": "County PopulationT",
+    "C_TotPop": "County Population",
     "IncomeHH": "Household Income",
     "PopDensity": "Population Density",
     "Geography": "County Name"
