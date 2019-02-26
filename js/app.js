@@ -34,7 +34,6 @@ require([
     "C_TotPop": "County Population",
     "IncomeHH": "Household Income",
     "PopDensity": "Population Density",
-    "Geography": "County Name"
   };
 
   app.map = new Map("map", {
@@ -59,7 +58,7 @@ require([
       "label": app.fields[app.currentAttribute],
       "visible": true,
       "format": {
-        places: 4,
+        places: 0,
         digitSeparator: true
       }
     }],
