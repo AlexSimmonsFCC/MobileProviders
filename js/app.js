@@ -39,7 +39,7 @@ require([
   
   app.map = new Map("map", {
     center: [-95.3, 38.397],
-    zoom: 12,
+    zoom: 6,
     slider: false
   });
   
@@ -170,6 +170,7 @@ require([
     //Add Options to Dropdown Select List 
    
    var HispanicPopulationFilter = {
+    '>= 0' : 'Any',
     '< 200' : '< 200',
     '> 200 AND "C_TotLatPo" < 1500' : '200 - 1,500',
     '> 1500 AND "C_TotLatPo" < 10000'  : '1,500 - 10,000',
@@ -177,6 +178,7 @@ require([
 }
 
    var BroadbandSpeedFilter = {
+    '>= 0' : 'Any',
     '< 50' : '< 50',
     '> 50 AND "MaxAvgWeig" < 200' : '50 - 200',
     '> 200 AND "MaxAvgWeig" < 400'  : '200 - 400',
@@ -186,6 +188,7 @@ require([
 
 
 var IncomeFilter = {
+    '>= 0' : 'Any',
     '< 3200' : '< $3,000',
     '> 3200 AND "IncomeHH" < 7000' : '$3,200 - $7,000',
     '> 7000 AND "IncomeHH" < 1500'  : '$7,000 - $15,000',
@@ -219,20 +222,34 @@ var IncomeFilter = {
 
     function setDefinitionExp(HispPopValue, BroadbandSpeedValue, IncomeValue) {
       console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + IncomeValue);
-      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + IncomeValue);
-      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + IncomeValue);
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
     }
     
 
     
     filterButton.addEventListener('click', function(){
-      setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value);
+        setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value);
+        app.TestSwitch.refresh();
+        app.TestSwitch2.refresh();
+        app.TestSwitch3.refresh();    
+    });
+    
+
+   resetButton.addEventListener('click', function(){
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch.refresh();
       app.TestSwitch2.refresh();
       app.TestSwitch3.refresh();    
-    });
-    
+         }); 
+
+
+
+
+
 
     
     // Add Button Events to Change Layers
