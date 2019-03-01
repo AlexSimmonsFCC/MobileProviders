@@ -39,7 +39,7 @@ require([
   
   app.map = new Map("map", {
     center: [-95.3, 38.397],
-    zoom: 10,
+    zoom: 5,
     slider: false
   });
   
