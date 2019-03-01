@@ -39,7 +39,7 @@ require([
   
   app.map = new Map("map", {
     center: [-95.3, 38.397],
-    zoom: 6,
+    zoom: 10,
     slider: false
   });
   
@@ -56,8 +56,8 @@ require([
   app.TestSwitch4 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch5 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch6 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
-  app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography"];
-  app.outFields2 = ["LatPop", "LatPct","MedianHHIn","W_Avg", "tractjoin"];
+  app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography", "MaxAvgWeig"];
+  app.outFields2 = ["C_TotLatPo", "LatPct","IncomeHH","MaxAvgWeig", "tractjoin"];
 
   app.popupTemplate = new PopupTemplate({
     title: "{Geography}",
@@ -76,10 +76,10 @@ require([
     title: "{Geography}",
     fieldInfos: [ 
             { fieldName: "tractjoin", visible: true, label: "Tract ID: " },
-            { fieldName: "LatPop", visible: true, label: "Tract Latino Population: " },
+            { fieldName: "C_TotLatPo", visible: true, label: "Tract Latino Population: " },
             { fieldName: "LatPct", visible: true, label: "Tract Percent Latino (%): " },
             { fieldName: "MedianHHIn", visible: true, label: "2016 Household Income: " },
-            { fieldName: "W_Avg", visible: true, label: "Tract Broandspeed (Mbp/s): " }],
+            { fieldName: "MaxAvgWeig", visible: true, label: "Tract Broandspeed (Mbp/s): " }],
   showAttachments: true,
   });
   
@@ -193,7 +193,7 @@ var IncomeFilter = {
     '> 3200 AND "IncomeHH" < 7000' : '$3,200 - $7,000',
     '> 7000 AND "IncomeHH" < 1500'  : '$7,000 - $15,000',
     '> 15000 AND "IncomeHH" < 35000'  : '$15,000 - $35,000',
-    '> 350000'  : '> $35,0000'
+    '> 35000'  : '> $35,000'
 }
 
 
@@ -225,16 +225,11 @@ var IncomeFilter = {
       app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
       app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
       app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-    
-      app.TestSwitch4.setDefinitionExpression("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
-      app.TestSwitch5.setDefinitionExpression("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
-      app.TestSwitch6.setDefinitionExpression("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
-    
-    
-    
-    
-    
-    
+      
+      console.log("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
+      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
     }
     
 
@@ -352,7 +347,7 @@ var IncomeFilter = {
  
  
  
-  createRenderer2("LatPop");
+  createRenderer2("C_TotLatPo");
    
      function createRenderer2(field) {
      app.sfs2 = new SimpleFillSymbol(
@@ -363,7 +358,7 @@ var IncomeFilter = {
      0.5),)};
  
      var classDef2 = new ClassBreaksDefinition();
-     classDef2.classificationField = "LatPop";
+     classDef2.classificationField = "C_TotLatPo";
      classDef2.classificationMethod = "quantile";
      classDef2.breakCount = 5;      
      classDef2.baseSymbol = app.sfs2;
@@ -488,7 +483,7 @@ Button2.addEventListener('click', function(e){
  
  
  
-     createRenderer2("W_Avg");
+     createRenderer2("MaxAvgWeig");
    
      function createRenderer2(field) {
      app.sfs2 = new SimpleFillSymbol(
@@ -499,7 +494,7 @@ Button2.addEventListener('click', function(e){
      0.5),)};
  
      var classDef2 = new ClassBreaksDefinition();
-     classDef2.classificationField = "W_Avg";
+     classDef2.classificationField = "MaxAvgWeig";
      classDef2.classificationMethod = "quantile";
      classDef2.breakCount = 5;      
      classDef2.baseSymbol = app.sfs2;
@@ -550,7 +545,7 @@ Button2.addEventListener('click', function(e){
     
       Button3.addEventListener('click', function(e){
       app.outFields = ["IncomeHH"];
-      app.outFields2 = ["MedianHHIn"];
+      app.outFields2 = ["IncomeHH"];
       app.map.removeLayer(app.TestSwitch2);
       app.map.removeLayer(app.TestSwitch);
       app.map.removeLayer(app.TestSwitch5);
@@ -622,7 +617,7 @@ Button2.addEventListener('click', function(e){
  
  
  
- createRenderer2("MedianHHIn");
+ createRenderer2("IncomeHH");
    
      function createRenderer2(field) {
      app.sfs2 = new SimpleFillSymbol(
@@ -633,7 +628,7 @@ Button2.addEventListener('click', function(e){
      0.5),)};
  
      var classDef2 = new ClassBreaksDefinition();
-     classDef2.classificationField = "MedianHHIn";
+     classDef2.classificationField = "IncomeHH";
      classDef2.classificationMethod = "quantile";
      classDef2.breakCount = 10;      
      classDef2.baseSymbol = app.sfs2;
@@ -785,7 +780,7 @@ Button2.addEventListener('click', function(e){
     
     //Create Tract Hispanic Population Layer on Load
     
-    createRenderer2("LatPop");
+    createRenderer2("C_TotLatPo");
    
      function createRenderer2(field) {
      app.sfs2 = new SimpleFillSymbol(
@@ -796,7 +791,7 @@ Button2.addEventListener('click', function(e){
      0.5),)};
  
      var classDef2 = new ClassBreaksDefinition();
-     classDef2.classificationField = "LatPop";
+     classDef2.classificationField = "C_TotLatPo";
      classDef2.classificationMethod = "quantile";
      classDef2.breakCount = 5;      
      classDef2.baseSymbol = app.sfs2;
