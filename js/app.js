@@ -1,3 +1,5 @@
+
+
 var app = {};
 require([
   "esri/map", "esri/tasks/query",
@@ -8,7 +10,7 @@ require([
   "esri/dijit/PopupTemplate", "esri/dijit/Legend",
   "dojo/parser", "dojo/_base/array", "esri/Color",
   "dojo/dom", "dojo/dom-construct", "dojo/number",
-  "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect",
+  "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect", "esri/tasks/QueryTask",
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
   "dojo/domReady!"
 
@@ -21,292 +23,783 @@ require([
   PopupTemplate, Legend,
   parser, arrayUtils, Color,
   dom, domConstruct, number,
-  ItemFileReadStore, FilteringSelect
+  ItemFileReadStore, FilteringSelect, QueryTask
 ) {
 
   parser.parse();
-  // the counties map service uses the actual field name as the field alias
-  // set up an object to use as a lookup table to convert from terse field
-  // names to more user friendly field names
   app.fields = {
     "C_TotLatPo": "Latino Population",
     "C_TotLat_1": "Percent Latino Population",
     "C_TotPop": "County Population",
     "IncomeHH": "Household Income",
-    "PopDensity": "Population Density"
+    "PopDensity": "Population Density",
+    "TtoV": "T-Mobile To Verizon",
+    "LatPop": "Latino Population"
   };
-
+  
   app.map = new Map("map", {
     center: [-95.3, 38.397],
-    zoom: 5,
+    zoom: 12,
     slider: false
   });
-  var basemap = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer");
-  app.map.addLayer(basemap);
-  var ref = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer");
-  app.map.addLayer(ref);
+  
+  // Instantiate Basemaps
+   var basemap = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer");
+   app.map.addLayer(basemap);
+   var ref = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer");
+   app.map.addLayer(ref);
 
-  // various info for the feature layer
-  app.OverallURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
-  app.PrePaidURL = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
+  // Instantiate Layers
+  app.TestSwitch = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.TestSwitch2 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.TestSwitch3 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.TestSwitch4 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
+  app.TestSwitch5 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
+  app.TestSwitch6 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography"];
-  app.currentAttribute = "C_TotLat_1";
+  app.outFields2 = ["LatPop", "LatPct","MedianHHIn","W_Avg", "tractjoin"];
+
   app.popupTemplate = new PopupTemplate({
     title: "{Geography}",
-    fieldInfos: [{
-      "fieldName": app.currentAttribute,
-      "label": app.fields[app.currentAttribute]+ ":",
-      "visible": true,
-      "format": {
-        places: 0,
-        digitSeparator: true
-      }
-    }],
-    showAttachments: true
+    fieldInfos: [ 
+            { fieldName: "C_TotPop", visible: true, label: "County Population: " },
+            { fieldName: "C_TotLatPo", visible: true, label: "County Latino Population: " },
+            { fieldName: "C_TotLat_1", visible: true, label: "County Percent Latino (%): " },
+            { fieldName: "IncomeHH", visible: true, label: "2016 Household Income: " },
+            { fieldName: "MaxAvgWeig", visible: true, label: "County Broandspeed (Mbp/s): ", format: { places: 2 }}],
+    showAttachments: true,
   });
 
+  
 
-
-  // create a feature layer 
-  // wait for map to load so the map's extent is available
+   app.popupTemplate2 = new PopupTemplate({
+    title: "{Geography}",
+    fieldInfos: [ 
+            { fieldName: "tractjoin", visible: true, label: "Tract ID: " },
+            { fieldName: "LatPop", visible: true, label: "Tract Latino Population: " },
+            { fieldName: "LatPct", visible: true, label: "Tract Percent Latino (%): " },
+            { fieldName: "MedianHHIn", visible: true, label: "2016 Household Income: " },
+            { fieldName: "W_Avg", visible: true, label: "Tract Broandspeed (Mbp/s): " }],
+  showAttachments: true,
+  });
+  
+  
+  
+  
+  
+  
+  
+  // Create Feature Layers
   app.map.on("load", function () {
-    app.wash = new FeatureLayer(app.OverallURL, {
-      "id": "counties",
+
+      app.TestSwitch = new FeatureLayer(app.TestSwitch, {
+      "id": "TestSwitch",
       "infoTemplate": app.popupTemplate,
+      "outFields": app.outFields,
       "opacity": 0.8,
       maxScale: 1155581.108577
-    });
-
-    app.wash2 = new  FeatureLayer (app.PrePaidURL, {
-      "id": "tracts",
+      } )
+    
+      app.TestSwitch2 = new FeatureLayer(app.TestSwitch2, {
+      "id": "TestSwitch2",
       "infoTemplate": app.popupTemplate,
+      "outFields": app.outFields,
+      "opacity": 0.8,
+      maxScale: 1155581.108577
+      } )
+    
+      app.TestSwitch3 = new FeatureLayer(app.TestSwitch3, {
+      "id": "TestSwitch3",
+      "infoTemplate": app.popupTemplate,
+      "outFields": app.outFields,
+      "opacity": 0.8,
+      maxScale: 1155581.108577
+      } )
+    
+     
+      app.TestSwitch4 = new FeatureLayer(app.TestSwitch4, {
+      "id": "TestSwitch4",
+      "infoTemplate": app.popupTemplate2,
+      "outFields": app.outFields2,
       "opacity": 0.8,
       minScale: 577790.554289
-    });
+      } )
+     
+      app.TestSwitch5 = new FeatureLayer(app.TestSwitch5, {
+      "id": "TestSwitch5",
+      "infoTemplate": app.popupTemplate2,
+      "outFields": app.outFields2,
+      "opacity": 0.8,
+      minScale: 577790.554289
+      } )
+      
+      app.TestSwitch6 = new FeatureLayer(app.TestSwitch6, {
+      "id": "TestSwitch6",
+      "infoTemplate": app.popupTemplate2,
+      "outFields": app.outFields2,
+      "opacity": 0.8,
+      minScale: 577790.554289
+      } )
+     
+     
 
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-          // show selected attribute on click
-          app.mapClick = app.wash.on("click", function(evt) {
-            var name = evt.graphic.attributes.Geography,
-                ca = app.currentAttribute,
-                content = app.fields[ca] + ": " + number.format(evt.graphic.attributes[ca]);
-            app.map.infoWindow.setTitle(name);
-            app.map.infoWindow.setContent(content);
-            // show info window at correct location based on the event's properties
-            (evt) ? app.map.infoWindow.show(evt.screenPoint, app.map.getInfoWindowAnchor(evt.screenPoint)) : null;
-          }); 
-
-    app.map.addLayer(app.wash);
-    app.map.addLayer(app.wash2);
-
+       // Declare DOM elements and set Button Actions
    
-    // colors for the renderer
+     var Button1 = document.getElementById('B1');
+     var Button2 = document.getElementById('B2');
+     var Button3 = document.getElementById('B3');
+     var filterButton = document.getElementById('filterButton');
+     var resetButton = document.getElementById('resetButton');
+     var HispPopDp = document.getElementById("HispPop");
+     var BroadbandDp = document.getElementById("BroadbandSpeed");
+     var IncomeDp = document.getElementById("Income");
+
+
+    //Add Layers to Map
+
+    app.map.addLayer(app.TestSwitch);
+    app.map.addLayer(app.TestSwitch4);
+
+
+    //Set Default Colors
     app.defaultFrom = Color.fromHex("#FFFF80");
     app.defaultTo = Color.fromHex("#6B0000");
-
-
-    createRenderer("C_TotLat_1");
-
-
-    var yearDp = document.getElementById("YR");
-    var monthDp = document.getElementById("MNTH");
-    var filterButton = document.getElementById('filterBtn');
-
-
-
-
-    //Create a query for use in our code.
-    var query = new Query();
-    query.where = '1=1';
-    query.outFields = ["YR"];
-    query.returnGeometry = false;
-
-    var arr1 = [];
-
-    app.wash.queryFeatures(query).then(function (featureSet) {
-      //Since the "year field is not distinct, we only add the year to the empty array if it is not in there already"
-      featureSet.features.forEach(function (feature) {
-        if (arr1.includes(feature.attributes.YR) === false) {
-          arr1.push(feature.attributes.YR);
-        }
-      });
-
-      // For each unique year, create an option and add it to the dropdown list.
-      arr1.forEach(function (year) {
-        var option = document.createElement("option");
-        option.text = year;
-        yearDp.add(option);
-      });
-      // setDefinitionExp(yearDp.value);
-    });
-
-    //Set the definition expression based on the value of the dropdown.
-    function setDefinitionExp(yearValue, monthValue) {
-      console.log(yearValue, monthValue);
-      console.log("YR = " + yearValue + " AND " + "MNTH = " + monthValue);
-      app.wash.setDefinitionExpression("YR = " + yearValue + " AND " + "MNTH = " + monthValue);
-    }
-
-
-    //Create a query for use in our code.
-    var query2 = new Query();
-    query2.where = '1=1';
-    query2.outFields = ["MNTH"];
-    query2.returnGeometry = false;
-
-    var arr = [];
-
-    app.wash.queryFeatures(query2).then(function (featureSet) {
-      //Since the "year field is not distinct, we only add the year to the empty array if it is not in there already"
-      featureSet.features.forEach(function (feature) {
-        if (arr.includes(feature.attributes.MNTH) === false) {
-          arr.push(feature.attributes.MNTH);
-        }
-      });
-
-      // For each unique year, create an option and add it to the dropdown list.
-      arr.forEach(function (month) {
-        var option = document.createElement("option");
-        option.text = month;
-        monthDp.add(option);
-      });
-      // setDefinitionExp2(monthDp.value);
-    });
-
-    filterButton.addEventListener('click', function(){
-      setDefinitionExp(yearDp.value, monthDp.value);
-    });
-
-  });
-
-
-  // create a store and a filtering select for the county layer's fields
-  var fieldNames, fieldStore, fieldSelect;
-  fieldNames = {
-    "identifier": "value",
-    "label": "name",
-    "items": []
-  };
-  arrayUtils.forEach(app.outFields, function (f) {
-    if (arrayUtils.indexOf(f.split(" "), "Geography") == -1) { // exclude attrs that contain "NAME"
-      fieldNames.items.push({
-        "name": app.fields[f],
-        "value": f
-      });
-    }
-  });
-
-  fieldStore = new ItemFileReadStore({
-    data: fieldNames
-  });
-  fieldSelect = new FilteringSelect({
-    displayedValue: fieldNames.items[0].name,
-    value: fieldNames.items[0].value,
-    name: "fieldsFS",
-    required: false,
-    store: fieldStore,
-    searchAttr: "name",
-    style: {
-      "width": "290px",
-      "fontSize": "12pt",
-      "color": "#444"
-    }
-  }, domConstruct.create("div", null, dom.byId("fieldWrapper")));
-  fieldSelect.on("change", updateAttribute);
-
-  function createRenderer(field) {
-    app.sfs = new SimpleFillSymbol(
-      SimpleFillSymbol.STYLE_SOLID,
-      new SimpleLineSymbol(
-        SimpleLineSymbol.STYLE_SOLID,
-        new Color([0, 0, 0]),
-        0.5
-      ),
-      null
-    );
-    var classDef = new ClassBreaksDefinition();
-    classDef.classificationField = app.currentAttribute;
-    classDef.classificationMethod = "natural-breaks";
-    classDef.breakCount = 6;
-    classDef.baseSymbol = app.sfs;
-
-    var colorRamp = new AlgorithmicColorRamp();
-    colorRamp.fromColor = app.defaultFrom;
-    colorRamp.toColor = app.defaultTo;
-    colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
-    classDef.colorRamp = colorRamp;
-
-    var params = new GenerateRendererParameters();
-    params.classificationDefinition = classDef;
-    // limit the renderer to data being shown by the feature layer
-    params.where = app.layerDef;
-    var generateRenderer = new GenerateRendererTask(app.OverallURL);
-    generateRenderer.execute(params, applyRenderer, errorHandler);
-
-  }
-
-  function applyRenderer(renderer) {
-    app.wash.setRenderer(renderer);
-    app.wash.redraw();
-    createLegend(app.map, app.wash);
-  }
-
-  function updateAttribute(ch) {
-    app.map.infoWindow.hide();
-    delete app.popupTemplate;
-    app.popupTemplate = new PopupTemplate({
-      title: "{Geography}",
-      fieldInfos: [{
-        "fieldName": ch,
-        "label": app.fields[ch],
-        "visible": true,
-        "format": {
-          places: 0,
-          digitSeparator: true
-        }
-      }],
-      showAttachments: false
-    });
-    app.wash.setInfoTemplate(app.popupTemplate);
-    app.currentAttribute = ch;
-    createRenderer(ch);
-    createLegend(app.map, app.wash);
-  }
-
-  function createLegend(map, fl) {
-    // destroy previous legend, if present
-    if (app.hasOwnProperty("legend")) {
-      app.legend.destroy();
-      domConstruct.destroy(dojo.byId("legendDiv"));
-    }
-    // create a new div for the legend
-    var legendDiv = domConstruct.create("div", {
-      id: "legendDiv"
-    }, dom.byId("legendWrapper"));
-
-    app.legend = new Legend({
-      map: map,
-      layerInfos: [{
-        layer: fl,
-        title: " "
-      }]
-    }, legendDiv);
-    app.legend.startup();
-  }
-
-  function errorHandler(err) {
-    console.log('Oops, error: ', err);
-  }
-});
-
-
+    
+    
+    
+    //Add Options to Dropdown Select List 
    
+   var HispanicPopulationFilter = {
+    '< 200' : '< 200',
+    '> 200 AND "C_TotLatPo" < 1500' : '200 - 1,500',
+    '> 1500 AND "C_TotLatPo" < 10000'  : '1,500 - 10,000',
+    '> 10000'  : '> 10,000'
+}
+
+   var BroadbandSpeedFilter = {
+    '< 50' : '< 50',
+    '> 50 AND "MaxAvgWeig" < 200' : '50 - 200',
+    '> 200 AND "MaxAvgWeig" < 400'  : '200 - 400',
+    '> 400 AND "MaxAvgWeig" < 800'  : '400 - 800',
+    '> 800'  : '> 800'
+}
+
+
+var IncomeFilter = {
+    '< 3200' : '< $3,000',
+    '> 3200 AND "IncomeHH" < 7000' : '$3,200 - $7,000',
+    '> 7000 AND "IncomeHH" < 1500'  : '$7,000 - $15,000',
+    '> 15000 AND "IncomeHH" < 35000'  : '$15,000 - $35,000',
+    '> 350000'  : '> $35,0000'
+}
+
+
+
+
+
+   var HispPopSelect = document.getElementById("HispPop");
+   for(index in HispanicPopulationFilter) {
+    HispPopSelect.options[HispPopSelect.options.length] = new Option(HispanicPopulationFilter[index], index);
+   }
+   
+   var BroadbandSpeedSelect = document.getElementById("BroadbandSpeed");
+   for(index in BroadbandSpeedFilter) {
+    BroadbandSpeedSelect.options[BroadbandSpeedSelect.options.length] = new Option(BroadbandSpeedFilter[index], index);
+   }
+   
+   var IncomeSelect = document.getElementById("Income");
+   for(index in IncomeFilter) {
+    IncomeSelect.options[IncomeSelect.options.length] = new Option(IncomeFilter[index], index);
+   }
+   
+   
+   
+/*    ResetSQLStatement = "C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0"; */
+    
+
+    function setDefinitionExp(HispPopValue, BroadbandSpeedValue, IncomeValue) {
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + IncomeValue);
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + IncomeValue);
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + IncomeValue);
+    }
+    
+
+    
+    filterButton.addEventListener('click', function(){
+      setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value);
+      app.TestSwitch.refresh();
+      app.TestSwitch2.refresh();
+      app.TestSwitch3.refresh();    
+    });
+    
+
+    
+    // Add Button Events to Change Layers
+    
+    
+     Button1.addEventListener('click', function(e){
+      app.outFields = ["C_TotLatPo"];
+      app.map.removeLayer(app.TestSwitch2);
+      app.map.removeLayer(app.TestSwitch3)
+      app.map.removeLayer(app.TestSwitch5)
+      app.map.removeLayer(app.TestSwitch6)
+
+
+     app.map.addLayer(app.TestSwitch);
+      app.map.addLayer(app.TestSwitch4);
+     app.TestSwitch.refresh();
+     app.defaultFrom = Color.fromHex("#FFFF80");
+     app.defaultTo = Color.fromHex("#6B0000");
+     createRenderer("C_TotLatPo");
+   
+
+     function createRenderer(field) {
+     app.sfs = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef = new ClassBreaksDefinition();
+     classDef.classificationField = "C_TotLatPo";
+     classDef.classificationMethod = "quantile";
+     classDef.breakCount = 5;      
+     classDef.baseSymbol = app.sfs;
+
+     var colorRamp = new AlgorithmicColorRamp();
+     colorRamp.fromColor = app.defaultFrom;
+     colorRamp.toColor = app.defaultTo;
+     colorRamp.algorithm = "hsv"; 
+     classDef.colorRamp = colorRamp;
+       
+     var params = new GenerateRendererParameters();
+     params.classificationDefinition = classDef;
+    
+       
+     var generateRenderer = new GenerateRendererTask(app.TestSwitch);
+     generateRenderer.execute(params, applyRenderer);
+     console.log(params)
+       
+     function applyRenderer(renderer) {
+     console.log(renderer);  
+     app.TestSwitch.setRenderer(renderer);
+     app.TestSwitch.redraw();
+     createLegend(app.map, app.TestSwitch)};
+   
+  
+   function createLegend(map, fl ) {
+
+     if (app.hasOwnProperty("legend")) {
+       app.legend.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv"));
+     }
+    
+     var legendDiv = domConstruct.create("div", {
+      id: "legendDiv"
+     }, dom.byId("legendWrapper"));
+
+     app.legend = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv);
+     app.legend.startup();
+   }
+ 
+ 
+ 
+  createRenderer2("LatPop");
+   
+     function createRenderer2(field) {
+     app.sfs2 = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef2 = new ClassBreaksDefinition();
+     classDef2.classificationField = "LatPop";
+     classDef2.classificationMethod = "quantile";
+     classDef2.breakCount = 5;      
+     classDef2.baseSymbol = app.sfs2;
+     classDef2.colorRamp = colorRamp;
+
+     var params2 = new GenerateRendererParameters();
+     params2.classificationDefinition = classDef2;
+    
+       
+     var generateRenderer2 = new GenerateRendererTask(app.TestSwitch4);
+     generateRenderer2.execute(params2, applyRenderer2);
+     console.log(params2)
+       
+     function applyRenderer2(renderer2) {
+     console.log(renderer2);  
+     app.TestSwitch4.setRenderer(renderer2);
+     app.TestSwitch4.redraw();
+     createLegend2(app.map, app.TestSwitch4)};
+   
+  
+   function createLegend2(map, fl ) {
+
+     if (app.hasOwnProperty("legend2")) {
+       app.legend2.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv2"));
+     }
+    
+     var legendDiv2 = domConstruct.create("div", {
+      id: "legendDiv2"
+     }, dom.byId("legendWrapper"));
+
+     app.legend2 = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv2);
+     app.legend2.startup();
+   }
+
+ 
+     });
+   
+  
+  
+  
+
+Button2.addEventListener('click', function(e){
+     app.outFields = ["MaxAvgWeig"];
+     app.outFields2 = ["W_Avg"];
+     
+     app.map.removeLayer(app.TestSwitch);
+     app.map.removeLayer(app.TestSwitch3);
+     app.map.removeLayer(app.TestSwitch4);
+
+      
+     app.map.addLayer(app.TestSwitch2);
+     app.map.addLayer(app.TestSwitch5);
+     app.defaultFrom = Color.fromHex("#070707");
+     app.defaultTo = Color.fromHex("#076cc4");
+     createRenderer("MaxAvgWeig");
+     createRenderer("W_Avg");
+   
+
+     function createRenderer(field) {
+     app.sfs = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef = new ClassBreaksDefinition();
+     classDef.classificationField = "MaxAvgWeig";
+     classDef.classificationMethod = "quantile";
+     classDef.breakCount = 5;      
+     classDef.baseSymbol = app.sfs;
+
+     var colorRamp = new AlgorithmicColorRamp();
+     colorRamp.fromColor = app.defaultFrom;
+     colorRamp.toColor = app.defaultTo;
+     colorRamp.algorithm = "hsv"; 
+     classDef.colorRamp = colorRamp;
+       
+     var params = new GenerateRendererParameters();
+     params.classificationDefinition = classDef;
+    
+       
+     var generateRenderer = new GenerateRendererTask(app.TestSwitch2);
+     generateRenderer.execute(params, applyRenderer);
+     console.log(params)
+       
+     function applyRenderer(renderer) {
+     console.log(renderer);  
+     app.TestSwitch2.setRenderer(renderer);
+     app.TestSwitch2.redraw();
+     createLegend(app.map, app.TestSwitch2)};
+   
+  
+   function createLegend(map, fl ) {
+
+     if (app.hasOwnProperty("legend")) {
+       app.legend.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv"));
+     }
+    
+     var legendDiv = domConstruct.create("div", {
+      id: "legendDiv"
+     }, dom.byId("legendWrapper"));
+
+     app.legend = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv);
+     app.legend.startup();
+   }
+ 
+ 
+ 
+ 
+     createRenderer2("W_Avg");
+   
+     function createRenderer2(field) {
+     app.sfs2 = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef2 = new ClassBreaksDefinition();
+     classDef2.classificationField = "W_Avg";
+     classDef2.classificationMethod = "quantile";
+     classDef2.breakCount = 5;      
+     classDef2.baseSymbol = app.sfs2;
+     classDef2.colorRamp = colorRamp;
+
+     var params2 = new GenerateRendererParameters();
+     params2.classificationDefinition = classDef2;
+    
+       
+     var generateRenderer2 = new GenerateRendererTask(app.TestSwitch5);
+     generateRenderer2.execute(params2, applyRenderer2);
+     console.log(params2)
+       
+     function applyRenderer2(renderer2) {
+     console.log(renderer2);  
+     app.TestSwitch5.setRenderer(renderer2);
+     app.TestSwitch5.redraw();
+     createLegend2(app.map, app.TestSwitch5)};
+   
+  
+   function createLegend2(map, fl ) {
+
+     if (app.hasOwnProperty("legend2")) {
+       app.legend2.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv2"));
+     }
+    
+     var legendDiv2 = domConstruct.create("div", {
+      id: "legendDiv2"
+     }, dom.byId("legendWrapper"));
+
+     app.legend2 = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv2);
+     app.legend2.startup();
+   }
+ 
+
+     });
+  
+  
+  
+    
+    
+      Button3.addEventListener('click', function(e){
+      app.outFields = ["IncomeHH"];
+      app.outFields2 = ["MedianHHIn"];
+      app.map.removeLayer(app.TestSwitch2);
+      app.map.removeLayer(app.TestSwitch);
+      app.map.removeLayer(app.TestSwitch5);
+
+    
+      
+     app.map.addLayer(app.TestSwitch3);
+     app.map.addLayer(app.TestSwitch6);
+     app.defaultFrom = Color.fromHex("#f2b809");
+     app.defaultTo = Color.fromHex("#5c7cb2");
+     createRenderer("IncomeHH");
+   
+
+     function createRenderer(field) {
+     app.sfs = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef = new ClassBreaksDefinition();
+     classDef.classificationField = "IncomeHH";
+     classDef.classificationMethod = "quantile";
+     classDef.breakCount = 5;      
+     classDef.baseSymbol = app.sfs;
+
+     var colorRamp = new AlgorithmicColorRamp();
+     colorRamp.fromColor = app.defaultFrom;
+     colorRamp.toColor = app.defaultTo;
+     colorRamp.algorithm = "hsv"; 
+     classDef.colorRamp = colorRamp;
+       
+     var params = new GenerateRendererParameters();
+     params.classificationDefinition = classDef;
+    
+       
+     var generateRenderer = new GenerateRendererTask(app.TestSwitch3);
+     generateRenderer.execute(params, applyRenderer);
+     console.log(params)
+       
+     function applyRenderer(renderer) {
+     console.log(renderer);  
+     app.TestSwitch3.setRenderer(renderer);
+     app.TestSwitch3.redraw();
+     createLegend(app.map, app.TestSwitch3)};
+   
+  
+   function createLegend(map, fl ) {
+
+     if (app.hasOwnProperty("legend")) {
+       app.legend.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv"));
+     }
+    
+     var legendDiv = domConstruct.create("div", {
+      id: "legendDiv"
+     }, dom.byId("legendWrapper"));
+
+     app.legend = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv);
+     app.legend.startup();
+   }
+ 
+ 
+ 
+ createRenderer2("MedianHHIn");
+   
+     function createRenderer2(field) {
+     app.sfs2 = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef2 = new ClassBreaksDefinition();
+     classDef2.classificationField = "MedianHHIn";
+     classDef2.classificationMethod = "quantile";
+     classDef2.breakCount = 5;      
+     classDef2.baseSymbol = app.sfs2;
+     classDef2.colorRamp = colorRamp;
+
+     var params2 = new GenerateRendererParameters();
+     params2.classificationDefinition = classDef2;
+    
+       
+     var generateRenderer2 = new GenerateRendererTask(app.TestSwitch6);
+     generateRenderer2.execute(params2, applyRenderer2);
+     console.log(params2)
+       
+     function applyRenderer2(renderer2) {
+     console.log(renderer2);  
+     app.TestSwitch6.setRenderer(renderer2);
+     app.TestSwitch6.redraw();
+     createLegend2(app.map, app.TestSwitch6)};
+   
+  
+   function createLegend2(map, fl ) {
+
+     if (app.hasOwnProperty("legend2")) {
+       app.legend2.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv2"));
+     }
+    
+     var legendDiv2 = domConstruct.create("div", {
+      id: "legendDiv2"
+     }, dom.byId("legendWrapper"));
+
+     app.legend2 = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv2);
+     app.legend2.startup();
+   }
+ 
+
+ 
+ 
+     });
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //Render County Hispanic Population Layer on Page Load
+    
+    createRenderer("C_TotLatPo");
+   
+
+     function createRenderer(field) {
+     app.sfs = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef = new ClassBreaksDefinition();
+     classDef.classificationField = "C_TotLatPo";
+     classDef.classificationMethod = "quantile";
+     classDef.breakCount = 5;      
+     classDef.baseSymbol = app.sfs;
+
+     var colorRamp = new AlgorithmicColorRamp();
+     colorRamp.fromColor = app.defaultFrom;
+     colorRamp.toColor = app.defaultTo;
+     colorRamp.algorithm = "hsv"; 
+     classDef.colorRamp = colorRamp;
+       
+     var params = new GenerateRendererParameters();
+     params.classificationDefinition = classDef;
+    
+       
+     var generateRenderer = new GenerateRendererTask(app.TestSwitch);
+     generateRenderer.execute(params, applyRenderer);
+    // console.log(params)
+       
+     function applyRenderer(renderer) {
+    // console.log(renderer);  
+     app.TestSwitch.setRenderer(renderer);
+     app.TestSwitch.redraw();
+     createLegend(app.map, app.TestSwitch)};
+   
+  
+   function createLegend(map, fl ) {
+
+     if (app.hasOwnProperty("legend")) {
+       app.legend.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv"));
+     }
+    
+     var legendDiv = domConstruct.create("div", {
+      id: "legendDiv"
+     }, dom.byId("legendWrapper"));
+
+     app.legend = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv);
+     app.legend.startup();
+   }
+ 
+    
+    
+    
+    
+    
+    
+    //Create Tract Hispanic Population Layer on Load
+    
+    createRenderer2("LatPop");
+   
+     function createRenderer2(field) {
+     app.sfs2 = new SimpleFillSymbol(
+     SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+     new Color([0, 0, 0]),
+     0.5),)};
+ 
+     var classDef2 = new ClassBreaksDefinition();
+     classDef2.classificationField = "LatPop";
+     classDef2.classificationMethod = "quantile";
+     classDef2.breakCount = 5;      
+     classDef2.baseSymbol = app.sfs2;
+     classDef2.colorRamp = colorRamp;
+
+     var params2 = new GenerateRendererParameters();
+     params2.classificationDefinition = classDef2;
+    
+       
+     var generateRenderer2 = new GenerateRendererTask(app.TestSwitch4);
+     generateRenderer2.execute(params2, applyRenderer2);
+     console.log(params2)
+       
+     function applyRenderer2(renderer2) {
+     console.log(renderer2);  
+     app.TestSwitch4.setRenderer(renderer2);
+     app.TestSwitch4.redraw();
+     createLegend2(app.map, app.TestSwitch4)};
+   
+  
+   function createLegend2(map, fl ) {
+
+     if (app.hasOwnProperty("legend2")) {
+       app.legend2.destroy();
+       domConstruct.destroy(dojo.byId("legendDiv2"));
+     }
+    
+     var legendDiv2 = domConstruct.create("div", {
+      id: "legendDiv2"
+     }, dom.byId("legendWrapper"));
+
+     app.legend2 = new Legend({
+       map: map,
+       layerInfos: [{
+         layer: fl,
+         title: " "
+       }]
+     }, legendDiv2);
+     app.legend2.startup();
+   }
+ 
+    
+  });
+});
+  
+  
