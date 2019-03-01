@@ -225,6 +225,16 @@ var IncomeFilter = {
       app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
       app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
       app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+    
+      app.TestSwitch4.setDefinitionExpression("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
+      app.TestSwitch5.setDefinitionExpression("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
+      app.TestSwitch6.setDefinitionExpression("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
+    
+    
+    
+    
+    
+    
     }
     
 
@@ -233,7 +243,10 @@ var IncomeFilter = {
         setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value);
         app.TestSwitch.refresh();
         app.TestSwitch2.refresh();
-        app.TestSwitch3.refresh();    
+        app.TestSwitch3.refresh();
+        app.TestSwitch4.refresh();
+        app.TestSwitch5.refresh();
+        app.TestSwitch6.refresh();
     });
     
 
@@ -241,9 +254,16 @@ var IncomeFilter = {
       app.TestSwitch.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch2.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch3.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
+      app.TestSwitch4.setDefinitionExpression("LatPop >= 0 AND W_Avg >= 0 AND MedianHHIn >= 0");
+      app.TestSwitch5.setDefinitionExpression("LatPop >= 0 AND W_Avg >= 0 AND MedianHHIn >= 0");
+      app.TestSwitch6.setDefinitionExpression("LatPop >= 0 AND W_Avg >= 0 AND MedianHHIn >= 0");
+      
       app.TestSwitch.refresh();
       app.TestSwitch2.refresh();
       app.TestSwitch3.refresh();
+      app.TestSwitch4.refresh();
+      app.TestSwitch5.refresh();
+      app.TestSwitch6.refresh();
       HispPopDp.selectedIndex=0;
       BroadbandDp.selectedIndex=0;
       IncomeDp.selectedIndex=0;
