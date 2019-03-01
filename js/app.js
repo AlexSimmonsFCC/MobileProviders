@@ -249,9 +249,9 @@ var IncomeFilter = {
       app.TestSwitch.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch2.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch3.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
-      app.TestSwitch4.setDefinitionExpression("LatPop >= 0 AND W_Avg >= 0 AND MedianHHIn >= 0");
-      app.TestSwitch5.setDefinitionExpression("LatPop >= 0 AND W_Avg >= 0 AND MedianHHIn >= 0");
-      app.TestSwitch6.setDefinitionExpression("LatPop >= 0 AND W_Avg >= 0 AND MedianHHIn >= 0");
+      app.TestSwitch4.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
+      app.TestSwitch5.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
+      app.TestSwitch6.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       
       app.TestSwitch.refresh();
       app.TestSwitch2.refresh();
