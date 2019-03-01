@@ -237,13 +237,16 @@ var IncomeFilter = {
     });
     
 
-   resetButton.addEventListener('click', function(){
+    resetButton.addEventListener('click', function(){
       app.TestSwitch.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch2.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch3.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
       app.TestSwitch.refresh();
       app.TestSwitch2.refresh();
-      app.TestSwitch3.refresh();    
+      app.TestSwitch3.refresh();
+      HispPopDp.selectedIndex=0;
+      BroadbandDp.selectedIndex=0;
+      IncomeDp.selectedIndex=0;
          }); 
 
 
@@ -536,8 +539,8 @@ Button2.addEventListener('click', function(e){
       
      app.map.addLayer(app.TestSwitch3);
      app.map.addLayer(app.TestSwitch6);
-     app.defaultFrom = Color.fromHex("#f2b809");
-     app.defaultTo = Color.fromHex("#5c7cb2");
+     app.defaultFrom = Color.fromHex("#cbcdd6");
+     app.defaultTo = Color.fromHex("#16214f");
      createRenderer("IncomeHH");
    
 
@@ -612,7 +615,7 @@ Button2.addEventListener('click', function(e){
      var classDef2 = new ClassBreaksDefinition();
      classDef2.classificationField = "MedianHHIn";
      classDef2.classificationMethod = "quantile";
-     classDef2.breakCount = 5;      
+     classDef2.breakCount = 10;      
      classDef2.baseSymbol = app.sfs2;
      classDef2.colorRamp = colorRamp;
 
