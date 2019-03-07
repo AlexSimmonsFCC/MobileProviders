@@ -40,7 +40,7 @@ require([
   
   app.map = new Map("map", {
     center: [-95.3, 38.397],
-    zoom: 6,
+    zoom: 5,
     slider: true
   });
   
@@ -168,39 +168,51 @@ require([
     
     
     
-    //Add Options to Dropdown Select List 
-   
+   //Add Options to Dropdown Select List 
    var HispanicPopulationFilter = {
     '>= 0' : 'Any',
-    '< 200' : '< 200',
-    '> 200 AND "C_TotLatPo" < 1500' : '200 - 1,500',
-    '> 1500 AND "C_TotLatPo" < 10000'  : '1,500 - 10,000',
-    '> 10000'  : '> 10,000'
+    '< 200' : '< 2000',
+    '> 2000 AND "C_TotLatPo" < 11000' : '2,001 - 11,000',
+    '> 11001 AND "C_TotLatPo" < 23000'  : '11,001 - 23,000',
+    '> 23001 AND "C_TotLatPo" < 65000'  : '23,001 - 65,000',
+    '> 65001 AND "C_TotLatPo" < 500000'  : '65,001 - 500,000',
+    '> 500000 AND "C_TotLatPo" < 5000000'  : '500,000 - 5,000,000',
 }
 
    var BroadbandSpeedFilter = {
     '>= 0' : 'Any',
-    '< 50' : '< 50',
-    '> 50 AND "MaxAvgWeig" < 200' : '50 - 200',
-    '> 200 AND "MaxAvgWeig" < 400'  : '200 - 400',
-    '> 400 AND "MaxAvgWeig" < 800'  : '400 - 800',
-    '> 800'  : '> 800'
+    '> 0 AND "MaxAvgWeig" < 100' : '0 - 100',
+    '> 101 AND "MaxAvgWeig" < 200' : '101 - 200',
+    '> 201 AND "MaxAvgWeig" < 300'  : '201 - 300',
+    '> 301 AND "MaxAvgWeig" < 400'  : '301 - 400',
+    '> 401 AND "MaxAvgWeig" < 500'  : '401 - 500',
+    '> 501 AND "MaxAvgWeig" < 600'  : '501 - 600',
+    '> 601 AND "MaxAvgWeig" < 700'  : '601 - 700',
+    '> 701 AND "MaxAvgWeig" < 800'  : '701 - 800',
+    '> 801 AND "MaxAvgWeig" < 900'  : '801 - 900',
+    '> 901 AND "MaxAvgWeig" < 1000'  : '901 - 1000',
+
 }
 
 
 var IncomeFilter = {
     '>= 0' : 'Any',
-    '< 3200' : '< $3,000',
-    '> 3200 AND "IncomeHH" < 7000' : '$3,200 - $7,000',
-    '> 7000 AND "IncomeHH" < 1500'  : '$7,000 - $15,000',
-    '> 15000 AND "IncomeHH" < 35000'  : '$15,000 - $35,000',
-    '> 35000'  : '> $35,000'
+    '> 0 AND "LatPct" < 3.3' : '0% - 3.3%',
+    '> 3.4 AND "LatPct" < 7' : '3.4% - 7%',
+    '> 7.1 AND "LatPct" < 12'  : '7.1% - 12%',
+    '> 12.1 AND "LatPct" < 20'  : '12.1% - 20%',
+    '> 20.1 AND "LatPct" < 24'  : '20.1% - 24%',
+    '> 24.1 AND "LatPct" < 32'  : '24.1% - 32%',
+    '> 32.1 AND "LatPct" < 45'  : '32.1% - 45%',
+    '> 45.1 AND "LatPct" < 55'  : '45.1% - 55%',
+    '> 55.1 AND "LatPct" < 70'  : '55.1% - 70%',
+    '> 70.1 AND "LatPct" < 100'  : '70.1% - 100%',
 }
 
 
 
 
-
+   // Put Options into the Select Object
    var HispPopSelect = document.getElementById("HispPop");
    for(index in HispanicPopulationFilter) {
     HispPopSelect.options[HispPopSelect.options.length] = new Option(HispanicPopulationFilter[index], index);
@@ -217,26 +229,23 @@ var IncomeFilter = {
    }
    
    
-   
 
-    
 
     function setDefinitionExp(HispPopValue, BroadbandSpeedValue, IncomeValue) {
       console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
       
-      console.log("LatPop" + " " + HispPopValue + " " + "AND" + " " +  "W_Avg" + " " + BroadbandSpeedValue + " " + "AND" + " " + "MedianHHIn" + " " + IncomeValue);
-      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
+      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
+      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
+      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
     }
     
 
     
-    filterButton.addEventListener('click', function(){
-        setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value);
+    filterButton.addEventListener('click', function() {setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value);
         app.TestSwitch.refresh();
         app.TestSwitch2.refresh();
         app.TestSwitch3.refresh();
@@ -271,370 +280,234 @@ var IncomeFilter = {
     
     // Add Button Events to Change Layers
     
-    
+    // Hispanic Poulation Button
      Button1.addEventListener('click', function(e){
-      app.outFields = ["C_TotLatPo"];
-      app.map.removeLayer(app.TestSwitch2);
-      app.map.removeLayer(app.TestSwitch3)
-      app.map.removeLayer(app.TestSwitch5)
-      app.map.removeLayer(app.TestSwitch6)
-
+     app.outFields = ["C_TotLatPo"];
+     app.map.removeLayer(app.TestSwitch2);
+     app.map.removeLayer(app.TestSwitch3)
+     app.map.removeLayer(app.TestSwitch5)
+     app.map.removeLayer(app.TestSwitch6)
 
      app.map.addLayer(app.TestSwitch);
      app.map.addLayer(app.TestSwitch4);
+     app.legend.refresh();
      app.TestSwitch.refresh();
 
-   
-    var symbol = new SimpleFillSymbol();
-    symbol.setColor(new Color([150, 150, 150, 0.5]));
+     var symbol = new SimpleFillSymbol();
+     symbol.setColor(new Color([150, 150, 150, 0.5]));
  
      var classDef = new ClassBreaksRenderer(symbol, "C_TotLatPo");
-     classDef.addBreak(0, 765, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
-     classDef.addBreak(766, 1680, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)")));
-     classDef.addBreak(1681, 2812, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)")));
-     classDef.addBreak(2813, 4159, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)")));
-     classDef.addBreak(4160, 6122, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)")));
-     classDef.addBreak(6123, 13492, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)")));
+     classDef.addBreak({minValue: 0, maxValue: 2000, label: "0 - 2,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)"))});
+     classDef.addBreak({minValue: 2001, maxValue: 11000, label: "2,000 - 2,001", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
+     classDef.addBreak({minValue: 11001, maxValue: 23000, label: "11,001 - 23,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)"))});
+     classDef.addBreak({minValue: 23001, maxValue: 65000, label: "23,001 - 65,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)"))});
+     classDef.addBreak({minValue: 65001, maxValue: 500000, label: "65,001 - 500,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)"))});
+     classDef.addBreak({minValue:500001, maxValue: 5000000, label: "500,000 - 5,000,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)"))});
+     classDef.defaultLabel = null;
+     classDef.defaultSymbol = null;
 
+     app.TestSwitch.setRenderer(classDef);
+     app.TestSwitch.redraw();
+/*      createLegend(app.map, app.TestSwitch4); */
   
-     app.TestSwitch4.setRenderer(classDef);
-     app.TestSwitch4.redraw();
-     createLegend(app.map, app.TestSwitch4);
-  
+     app.map.on("extent-change", function(e) {
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+     if (CountyLayerVisible == true && Button1.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch;
+     app.legend.refresh()}
+     else if (Button1.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch4;
+     app.legend.refresh()};
+     });
+     
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+     if (CountyLayerVisible == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch;
+     app.legend.refresh()}
+     else {
+     app.legend.layerInfos[0].layer = app.TestSwitch4;
+     app.legend.refresh()};
+     
 
-   function createLegend(map, fl ) {
-
-     if (app.hasOwnProperty("legend")) {
-       app.legend2.destroy();
-       domConstruct.destroy(dojo.byId("legendDiv"));
-     }
-    
-     var legendDiv = domConstruct.create("div", {
-      id: "legendDiv"
-     }, dom.byId("legendWrapper"));
-
-     app.legend = new Legend({
-       map: map,
-       layerInfos: [{
-         layer: fl,
-         title: " "
-       }]
-     }, legendDiv);
-     app.legend.startup();
-   }
-   
- 
- 
      var symbol2 = new SimpleFillSymbol();
      symbol2.setColor(new Color([150, 150, 150, 0.5]));
- 
-     var classDef2 = new ClassBreaksRenderer(symbol2, "C_TotLatPo");
-     classDef2.addBreak(0, 765, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
-     classDef2.addBreak(766, 1680, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)")));
-     classDef2.addBreak(1681, 2812, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)")));
-     classDef2.addBreak(2813, 4159, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)")));
-     classDef2.addBreak(4160, 6122, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)")));
-     classDef2.addBreak(6123, 13492, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)")));
 
-  
+     var classDef2 = new ClassBreaksRenderer(symbol2, "C_TotLatPo");
+     classDef2.addBreak(0, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
+     classDef2.addBreak(401, 800, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
+     classDef2.addBreak({minValue: 801, maxValue: 1700,  label: "801 - 1,701", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
+     classDef2.addBreak({minValue: 1701, maxValue: 2800, label: "1,701 - 2,800", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)"))});
+     classDef2.addBreak({minValue: 2801, maxValue: 4100, label: "2,801 - 4,100", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)"))});
+     classDef2.addBreak({minValue: 4101, maxValue: 6100, label: "4,101 - 6,100", symbol:  new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)"))});
+     classDef2.addBreak({minValue: 6101, maxValue: 14000,label: "6,101 - 14,100", symbol:   new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)"))});
+
+     classDef2.defaultLabel = null;
+     classDef2.defaultSymbol = null;
+     
      app.TestSwitch4.setRenderer(classDef2);
      app.TestSwitch4.redraw();
-     createLegend(app.map, app.TestSwitch4);
-  
 
-/*    function createLegend2(map, fl ) {
-    
-     if (app.hasOwnProperty("legend2")) {
-       app.legend2.destroy();
-       domConstruct.destroy(dojo.byId("legendDiv2"));
-     }
-    
-     var legendDiv2 = domConstruct.create("div", {
-      id: "legendDiv2"
-     }, dom.byId("legendWrapper"));
-    
-     app.legend2 = new Legend({
-       map: map,
-       layerInfos: [{
-         layer: fl,
-         title: " "
-       }]
-     }, legendDiv2);
-     app.legend2.startup();
-       } */
-
- 
      });
    
   
   
   
-
-Button2.addEventListener('click', function(e){
+     // Broadband Speed Button
+     Button2.addEventListener('click', function(e){
      app.outFields = ["MaxAvgWeig"];
-     app.outFields2 = ["W_Avg"];
-     
      app.map.removeLayer(app.TestSwitch);
      app.map.removeLayer(app.TestSwitch3);
      app.map.removeLayer(app.TestSwitch4);
 
-      
      app.map.addLayer(app.TestSwitch2);
      app.map.addLayer(app.TestSwitch5);
-     app.defaultFrom = Color.fromHex("#070707");
-     app.defaultTo = Color.fromHex("#076cc4");
-     createRenderer("MaxAvgWeig");
-     createRenderer("W_Avg");
-   
+     app.legend.refresh();
+     app.TestSwitch2.refresh();
 
-     function createRenderer(field) {
-     app.sfs = new SimpleFillSymbol(
-     SimpleFillSymbol.STYLE_SOLID,
-     new SimpleLineSymbol(
-      SimpleLineSymbol.STYLE_SOLID,
-     new Color([0, 0, 0]),
-     0.5),)};
+     var symbol = new SimpleFillSymbol();
+     symbol.setColor(new Color([150, 150, 150, 0.5]));
  
-     var classDef = new ClassBreaksDefinition();
-     classDef.classificationField = "MaxAvgWeig";
-     classDef.classificationMethod = "quantile";
-     classDef.breakCount = 5;      
-     classDef.baseSymbol = app.sfs;
+     var classDef = new ClassBreaksRenderer(symbol, "MaxAvgWeig");
+     classDef.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(35,35,35)")));
+     classDef.addBreak(101, 200, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(56,66,51)")));
+     classDef.addBreak(201, 300, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(60,82,50)")));
+     classDef.addBreak(301, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(65,99,49)")));
+     classDef.addBreak(401, 500, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(70,120,48)")));
+     classDef.addBreak(501, 600, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(72,138,44)")));
+     classDef.addBreak(601, 700, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(74,161,40)")));
+     classDef.addBreak(701, 800, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,181,34)")));
+     classDef.addBreak(801, 900, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,207,25)")));
+     classDef.addBreak(901, 1000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,230,0)")));
+     classDef.defaultLabel = null;
+     classDef.defaultSymbol = null;
 
-     var colorRamp = new AlgorithmicColorRamp();
-     colorRamp.fromColor = app.defaultFrom;
-     colorRamp.toColor = app.defaultTo;
-     colorRamp.algorithm = "hsv"; 
-     classDef.colorRamp = colorRamp;
-       
-     var params = new GenerateRendererParameters();
-     params.classificationDefinition = classDef;
-    
-       
-     var generateRenderer = new GenerateRendererTask(app.TestSwitch2);
-     generateRenderer.execute(params, applyRenderer);
-     console.log(params)
-       
-     function applyRenderer(renderer) {
-     console.log(renderer);  
-     app.TestSwitch2.setRenderer(renderer);
+     app.TestSwitch2.setRenderer(classDef);
      app.TestSwitch2.redraw();
-     createLegend(app.map, app.TestSwitch2)};
    
-  
-   function createLegend(map, fl ) {
-
-     if (app.hasOwnProperty("legend")) {
-       app.legend.destroy();
-       domConstruct.destroy(dojo.byId("legendDiv"));
-     }
-    
-     var legendDiv = domConstruct.create("div", {
-      id: "legendDiv"
-     }, dom.byId("legendWrapper"));
-
-     app.legend = new Legend({
-       map: map,
-       layerInfos: [{
-         layer: fl,
-         title: " "
-       }]
-     }, legendDiv);
-     app.legend.startup();
-   }
- 
- 
- 
- 
-     createRenderer2("MaxAvgWeig");
-   
-     function createRenderer2(field) {
-     app.sfs2 = new SimpleFillSymbol(
-     SimpleFillSymbol.STYLE_SOLID,
-     new SimpleLineSymbol(
-      SimpleLineSymbol.STYLE_SOLID,
-     new Color([0, 0, 0]),
-     0.5),)};
- 
-     var classDef2 = new ClassBreaksDefinition();
-     classDef2.classificationField = "MaxAvgWeig";
-     classDef2.classificationMethod = "quantile";
-     classDef2.breakCount = 5;      
-     classDef2.baseSymbol = app.sfs2;
-     classDef2.colorRamp = colorRamp;
-
-     var params2 = new GenerateRendererParameters();
-     params2.classificationDefinition = classDef2;
-    
-       
-     var generateRenderer2 = new GenerateRendererTask(app.TestSwitch5);
-     generateRenderer2.execute(params2, applyRenderer2);
-     console.log(params2)
-       
-     function applyRenderer2(renderer2) {
-     console.log(renderer2);  
-     app.TestSwitch5.setRenderer(renderer2);
-     app.TestSwitch5.redraw();
-     createLegend2(app.map, app.TestSwitch5)};
-   
-  
-   function createLegend2(map, fl ) {
-
-     if (app.hasOwnProperty("legend2")) {
-       app.legend2.destroy();
-       domConstruct.destroy(dojo.byId("legendDiv2"));
-     }
-    
-     var legendDiv2 = domConstruct.create("div", {
-      id: "legendDiv2"
-     }, dom.byId("legendWrapper"));
-
-     app.legend2 = new Legend({
-       map: map,
-       layerInfos: [{
-         layer: fl,
-         title: " "
-       }]
-     }, legendDiv2);
-     app.legend2.startup();
-   }
- 
-
+     app.map.on("extent-change", function(e) {
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch2.visibleAtMapScale;
+     if (CountyLayerVisible == true && Button2.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch2;
+     app.legend.refresh()}
+     else if (Button2.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch5;
+     app.legend.refresh()};
      });
-  
-  
-  
-    
-    
-      Button3.addEventListener('click', function(e){
-      app.outFields = ["IncomeHH"];
-      app.outFields2 = ["IncomeHH"];
-      app.map.removeLayer(app.TestSwitch2);
-      app.map.removeLayer(app.TestSwitch);
-      app.map.removeLayer(app.TestSwitch5);
+     
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch2.visibleAtMapScale;
+     if (CountyLayerVisible == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch2;
+     app.legend.refresh()}
+     else {
+     app.legend.layerInfos[0].layer = app.TestSwitch5;
+     app.legend.refresh()};
 
+
+   
+     var symbol2 = new SimpleFillSymbol();
+     symbol2.setColor(new Color([150, 150, 150, 0.5]));
+
+     var classDef2 = new ClassBreaksRenderer(symbol2, "MaxAvgWeig");
+     classDef2.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(35,35,35)")));
+     classDef2.addBreak(101, 200, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(56,66,51)")));
+     classDef2.addBreak(201, 300, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(60,82,50)")));
+     classDef2.addBreak(301, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(65,99,49)")));
+     classDef2.addBreak(401, 500, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(70,120,48)")));
+     classDef2.addBreak(501, 600, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(72,138,44)")));
+     classDef2.addBreak(601, 700, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(74,161,40)")));
+     classDef2.addBreak(701, 800, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,181,34)")));
+     classDef2.addBreak(801, 900, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,207,25)")));
+     classDef2.addBreak(901, 1000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,230,0)")));
+
+     classDef2.defaultLabel = null;
+     classDef2.defaultSymbol = null;
+     
+     app.TestSwitch5.setRenderer(classDef2);
+     app.TestSwitch5.redraw();
+    });
+  
+  
+  
     
-      
+    // Add Hispanic Population Percent Button
+     Button3.addEventListener('click', function(e){
+     app.outFields = ["LatPct","C_TotLat_1"];
+     app.map.removeLayer(app.TestSwitch2);
+     app.map.removeLayer(app.TestSwitch);
+     app.map.removeLayer(app.TestSwitch4);
+     app.map.removeLayer(app.TestSwitch5);
+     
      app.map.addLayer(app.TestSwitch3);
      app.map.addLayer(app.TestSwitch6);
-     app.defaultFrom = Color.fromHex("#cbcdd6");
-     app.defaultTo = Color.fromHex("#16214f");
-     createRenderer("IncomeHH");
-   
+     app.legend.refresh();
+     app.TestSwitch3.refresh();
+     app.TestSwitch6.refresh();
 
-     function createRenderer(field) {
-     app.sfs = new SimpleFillSymbol(
-     SimpleFillSymbol.STYLE_SOLID,
-     new SimpleLineSymbol(
-      SimpleLineSymbol.STYLE_SOLID,
-     new Color([0, 0, 0]),
-     0.5),)};
+     var symbol = new SimpleFillSymbol();
+     symbol.setColor(new Color([150, 150, 150, 0.5]));
  
-     var classDef = new ClassBreaksDefinition();
-     classDef.classificationField = "IncomeHH";
-     classDef.classificationMethod = "quantile";
-     classDef.breakCount = 5;      
-     classDef.baseSymbol = app.sfs;
+     var classDef = new ClassBreaksRenderer(symbol, "C_TotLat_1");
+     classDef.addBreak(0, 3.3, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(240,240,240)")));
+     classDef.addBreak(3.4, 7, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(230,217,200)")));
+     classDef.addBreak(7.1, 12, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(232,207,174)")));
+     classDef.addBreak(12.1, 20, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(235,199,150)")));
+     classDef.addBreak(20.1, 24, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(237,192,128)")));
+     classDef.addBreak(24.1, 32, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(77,143,191)")));
+     classDef.addBreak(32.1, 45, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(67,126,168)")));
+     classDef.addBreak(45.1, 55, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(58,109,145)")));
+     classDef.addBreak(55.1, 70, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(49,92,122)")));
+     classDef.addBreak(70.1, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(41,77,102)")));
+     classDef.defaultLabel = null;
+     classDef.defaultSymbol = null;
 
-     var colorRamp = new AlgorithmicColorRamp();
-     colorRamp.fromColor = app.defaultFrom;
-     colorRamp.toColor = app.defaultTo;
-     colorRamp.algorithm = "hsv"; 
-     classDef.colorRamp = colorRamp;
-       
-     var params = new GenerateRendererParameters();
-     params.classificationDefinition = classDef;
-    
-       
-     var generateRenderer = new GenerateRendererTask(app.TestSwitch3);
-     generateRenderer.execute(params, applyRenderer);
-     console.log(params)
-       
-     function applyRenderer(renderer) {
-     console.log(renderer);  
-     app.TestSwitch3.setRenderer(renderer);
+     app.TestSwitch3.setRenderer(classDef);
      app.TestSwitch3.redraw();
-     createLegend(app.map, app.TestSwitch3)};
    
-  
-   function createLegend(map, fl ) {
+     app.map.on("extent-change", function(e) {
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch3.visibleAtMapScale;
+     if (CountyLayerVisible == true && Button3.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch3;
+     app.legend.refresh()}
+     else if (Button3.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch6;
+     app.legend.refresh()};
+     });
+     
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch3.visibleAtMapScale;
+     if (CountyLayerVisible == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch3;
+     app.legend.refresh()}
+     else {
+     app.legend.layerInfos[0].layer = app.TestSwitch6;
+     app.legend.refresh()};
 
-     if (app.hasOwnProperty("legend")) {
-       app.legend.destroy();
-       domConstruct.destroy(dojo.byId("legendDiv"));
-     }
-    
-     var legendDiv = domConstruct.create("div", {
-      id: "legendDiv"
-     }, dom.byId("legendWrapper"));
 
-     app.legend = new Legend({
-       map: map,
-       layerInfos: [{
-         layer: fl,
-         title: " "
-       }]
-     }, legendDiv);
-     app.legend.startup();
-   }
- 
- 
- 
- createRenderer2("IncomeHH");
    
-     function createRenderer2(field) {
-     app.sfs2 = new SimpleFillSymbol(
-     SimpleFillSymbol.STYLE_SOLID,
-     new SimpleLineSymbol(
-      SimpleLineSymbol.STYLE_SOLID,
-     new Color([0, 0, 0]),
-     0.5),)};
- 
-     var classDef2 = new ClassBreaksDefinition();
-     classDef2.classificationField = "IncomeHH";
-     classDef2.classificationMethod = "quantile";
-     classDef2.breakCount = 10;      
-     classDef2.baseSymbol = app.sfs2;
-     classDef2.colorRamp = colorRamp;
+     var symbol2 = new SimpleFillSymbol();
+     symbol2.setColor(new Color([150, 150, 150, 0.5]));
 
-     var params2 = new GenerateRendererParameters();
-     params2.classificationDefinition = classDef2;
-    
-       
-     var generateRenderer2 = new GenerateRendererTask(app.TestSwitch6);
-     generateRenderer2.execute(params2, applyRenderer2);
-     console.log(params2)
-       
-     function applyRenderer2(renderer2) {
-     console.log(renderer2);  
-     app.TestSwitch6.setRenderer(renderer2);
+     var classDef2 = new ClassBreaksRenderer(symbol2, "LatPct");
+     classDef2.addBreak(0, 3.3, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(240,240,240)")));
+     classDef2.addBreak(3.4, 7, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(230,217,200)")));
+     classDef2.addBreak(7.1, 12, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(232,207,174)")));
+     classDef2.addBreak(12.1, 20, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(235,199,150)")));
+     classDef2.addBreak(20.1, 24, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(237,192,128)")));
+     classDef2.addBreak(24.1, 32, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(77,143,191)")));
+     classDef2.addBreak(32.1, 45, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(67,126,168)")));
+     classDef2.addBreak(45.1, 55, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(58,109,145)")));
+     classDef2.addBreak(55.1, 70, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(49,92,122)")));
+     classDef2.addBreak(70.1, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(41,77,102)")));
+     classDef2.defaultLabel = null;
+     classDef.defaultSymbol = null;
+     
+     app.TestSwitch6.setRenderer(classDef2);
      app.TestSwitch6.redraw();
-     createLegend2(app.map, app.TestSwitch6)};
-   
-  
-   function createLegend2(map, fl ) {
-
-     if (app.hasOwnProperty("legend2")) {
-       app.legend2.destroy();
-       domConstruct.destroy(dojo.byId("legendDiv2"));
-     }
-    
-     var legendDiv2 = domConstruct.create("div", {
-      id: "legendDiv2"
-     }, dom.byId("legendWrapper"));
-
-     app.legend2 = new Legend({
-       map: map,
-       layerInfos: [{
-         layer: fl,
-         title: " "
-       }]
-     }, legendDiv2);
-     app.legend2.startup();
-   }
- 
-
- 
  
      });
     
@@ -676,49 +549,51 @@ Button2.addEventListener('click', function(e){
     
     //Render County Hispanic Population Layer on Page Load
      
-             var symbol = new SimpleFillSymbol();
-             symbol.setColor(new Color([150, 150, 150, 0.5]));
+     var symbol = new SimpleFillSymbol();
+     symbol.setColor(new Color([150, 150, 150, 0.5]));
          
-             var classDef = new ClassBreaksRenderer(symbol, "C_TotLatPo");
-             classDef.addBreak(0, 2000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
-             classDef.addBreak(2001, 11000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)")));
-             classDef.addBreak(11001, 23000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)")));
-             classDef.addBreak(23001, 65000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)")));
-             classDef.addBreak(65001, 500000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)")));
-             classDef.addBreak(500001, 5000000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)")));
-             classDef.defaultLabel = null;
-             classDef.defaultSymbol = null;
-        
-          
-             app.TestSwitch.setRenderer(classDef);
-             app.TestSwitch.redraw();
+     var classDef = new ClassBreaksRenderer(symbol, "C_TotLatPo");
+     classDef.addBreak({minValue: 0, maxValue: 2000, label: "0 - 2,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)"))});
+     classDef.addBreak({minValue: 2001, maxValue: 11000, label: "2,000 - 2,001", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
+     classDef.addBreak({minValue: 11001, maxValue: 23000, label: "11,001 - 23,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)"))});
+     classDef.addBreak({minValue: 23001, maxValue: 65000, label: "23,001 - 65,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)"))});
+     classDef.addBreak({minValue: 65001, maxValue: 500000, label: "65,001 - 500,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)"))});
+     classDef.addBreak({minValue:500001, maxValue: 5000000, label: "500,000 - 5,000,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)"))});
+     
+
+     
+     classDef.defaultLabel = null;
+     classDef.defaultSymbol = null;
+
+  
+     app.TestSwitch.setRenderer(classDef);
+     app.TestSwitch.redraw();
 
 
-
-        app.map.on("extent-change", function(e) {
-        var currentScale = app.map.getScale();
-        var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
-        if (CountyLayerVisible == true) {
-        app.legend.layerInfos[0].layer = app.TestSwitch;
-        app.legend.refresh()}
-        else {
-        app.legend.layerInfos[0].layer = app.TestSwitch4;
-        app.legend.refresh()};
-        });
+     app.map.on("extent-change", function(e) {
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+     if  (CountyLayerVisible == true && Button1.checked == true)  {
+     app.legend.layerInfos[0].layer = app.TestSwitch;
+     app.legend.refresh()}
+     else if (Button1.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch4;
+     app.legend.refresh()}
+     });
       
 
-           var legendDiv = domConstruct.create("div", {
-           id: "legendDiv"
-           }, dom.byId("legendWrapper")); 
+     var legendDiv = domConstruct.create("div", {
+     id: "legendDiv"
+     }, dom.byId("legendWrapper")); 
            
-           app.legend = new Legend({
-           map: app.map,
-           layerInfos: [{
-           layer: app.TestSwitch,
-           title: " "
-           }]
-           }, legendDiv);
-           app.legend.startup();   
+     app.legend = new Legend({
+     map: app.map,
+     layerInfos: [{
+     layer: app.TestSwitch,
+     title: " "
+     }]
+     }, legendDiv);
+     app.legend.startup();   
 
 
     
@@ -726,12 +601,13 @@ Button2.addEventListener('click', function(e){
      symbol2.setColor(new Color([150, 150, 150, 0.5]));
  
      var classDef2 = new ClassBreaksRenderer(symbol2, "C_TotLatPo");
-     classDef2.addBreak(0, 2000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
-     classDef2.addBreak(2001, 11000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)")));
-     classDef2.addBreak(11001, 23000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)")));
-     classDef2.addBreak(23001, 65000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)")));
-     classDef2.addBreak(65001, 500000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)")));
-     classDef2.addBreak(500001, 5000000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)")));
+     classDef2.addBreak(0, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
+     classDef2.addBreak(401, 800, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)")));
+     classDef2.addBreak({minValue: 801, maxValue: 1700,  label: "801 - 1,701", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
+     classDef2.addBreak({minValue: 1701, maxValue: 2800, label: "1,701 - 2,800", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)"))});
+     classDef2.addBreak({minValue: 2801, maxValue: 4100, label: "2,801 - 4,100", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)"))});
+     classDef2.addBreak({minValue: 4101, maxValue: 6100, label: "4,101 - 6,100", symbol:  new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)"))});
+     classDef2.addBreak({minValue: 6101, maxValue: 14000,label: "6,101 - 14,100", symbol:   new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(107,6,1)"))});
 
      classDef2.defaultLabel = null;
      classDef2.defaultSymbol = null;
