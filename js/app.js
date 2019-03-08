@@ -57,8 +57,10 @@ require([
   app.TestSwitch4 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch5 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch6 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
-  app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography", "MaxAvgWeig"];
-  app.outFields2 = ["C_TotLatPo", "LatPct","IncomeHH","MaxAvgWeig", "tractjoin"];
+  app.TestSwitch7 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
+  app.TestSwitch8 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography", "MaxAvgWeig","urban_pct"];
+  app.outFields2 = ["C_TotLatPo", "LatPct","IncomeHH","MaxAvgWeig", "tractjoin", "urban_pct"];
 
   app.popupTemplate = new PopupTemplate({
     title: "{Geography}",
@@ -67,6 +69,7 @@ require([
             { fieldName: "C_TotLatPo", visible: true, label: "County Hispanic Population: " },
             { fieldName: "C_TotLat_1", visible: true, label: "County Percent Latino (%): " },
             { fieldName: "IncomeHH", visible: true, label: "2016 Household Income: " },
+            { fieldName: "urban_pct", visible: true, label: "Population Density:", format: { places: 2 } },
             { fieldName: "MaxAvgWeig", visible: true, label: "County Broandspeed (Mbp/s): ", format: { places: 2 }}],
     showAttachments: true,
   });
@@ -80,6 +83,7 @@ require([
             { fieldName: "C_TotLatPo", visible: true, label: "Tract Latino Population: " },
             { fieldName: "LatPct", visible: true, label: "Tract Percent Latino (%): " },
             { fieldName: "MedianHHIn", visible: true, label: "2016 Household Income: " },
+            { fieldName: "urban_pct", visible: true, label: "Tract Population Density", format: { places: 2 }  },
             { fieldName: "MaxAvgWeig", visible: true, label: "Tract Broandspeed (Mbp/s): " }],
   showAttachments: true,
   });
@@ -117,6 +121,14 @@ require([
       maxScale: 1155581.108577
       } )
     
+    
+      app.TestSwitch8 = new FeatureLayer(app.TestSwitch8, {
+      "id": "TestSwitch8",
+      "infoTemplate": app.popupTemplate,
+      "outFields": app.outFields,
+      "opacity": 0.8,
+      maxScale: 1155581.108577
+      } )
      
       app.TestSwitch4 = new FeatureLayer(app.TestSwitch4, {
       "id": "TestSwitch4",
@@ -143,17 +155,31 @@ require([
       } )
      
      
+      app.TestSwitch7 = new FeatureLayer(app.TestSwitch7, {
+      "id": "TestSwitch7",
+      "infoTemplate": app.popupTemplate2,
+      "outFields": app.outFields2,
+      "opacity": 0.8,
+      minScale: 577790.554289
+      } )
+     
+     
+     
+     
+     
 
-       // Declare DOM elements and set Button Actions
+    // Get DOM elements
    
      var Button1 = document.getElementById('B1');
      var Button2 = document.getElementById('B2');
      var Button3 = document.getElementById('B3');
+     var Button4 = document.getElementById('B4');
      var filterButton = document.getElementById('filterButton');
      var resetButton = document.getElementById('resetButton');
      var HispPopDp = document.getElementById("HispPop");
      var BroadbandDp = document.getElementById("BroadbandSpeed");
      var IncomeDp = document.getElementById("Income");
+     var PopDensityDp = document.getElementById("PopDensity");
 
 
     //Add Layers to Map
@@ -209,6 +235,13 @@ require([
 }
 
 
+var PopDensityFilter = {
+    '>= 0' : 'Any',
+    ' = 0' : 'Rural',
+    '> 0 AND "urban_pct" < .4' : 'Suburban',
+    ' > .8' : 'Urban',
+}
+
 var IncomeFilter = {
     '>= 0' : 'Any',
     '> 0 AND "LatPct" < 3.3' : '0% - 3.3%',
@@ -222,6 +255,7 @@ var IncomeFilter = {
     '> 55.1 AND "LatPct" < 70'  : '55.1% - 70%',
     '> 70.1 AND "LatPct" < 100'  : '70.1% - 100%',
 }
+
 
 
 
@@ -242,40 +276,52 @@ var IncomeFilter = {
     IncomeSelect.options[IncomeSelect.options.length] = new Option(IncomeFilter[index], index);
    }
    
+    var PopDensitySelect = document.getElementById("PopDensity");
+   for(index in PopDensityFilter) {
+    PopDensitySelect.options[PopDensitySelect.options.length] = new Option(PopDensityFilter[index], index);
+   }
+   
    
 
 
-    function setDefinitionExp(HispPopValue, BroadbandSpeedValue, IncomeValue) {
-      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "IncomeHH" + " " + IncomeValue);
-      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
-      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
-      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
+    function setDefinitionExp(HispPopValue, BroadbandSpeedValue, IncomeValue, PopDensityValue) {
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch8.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
       
-      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
-      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
-      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
-      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue);
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      app.TestSwitch7.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
     }
+    
     
 
     
-    filterButton.addEventListener('click', function() {setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value);
+    filterButton.addEventListener('click', function() {setDefinitionExp(HispPopDp.value, BroadbandDp.value, IncomeDp.value, PopDensityDp.value );
         app.TestSwitch.refresh();
         app.TestSwitch2.refresh();
         app.TestSwitch3.refresh();
         app.TestSwitch4.refresh();
         app.TestSwitch5.refresh();
         app.TestSwitch6.refresh();
+        app.TestSwitch7.refresh();
+        app.TestSwitch8.refresh();
     });
     
 
     resetButton.addEventListener('click', function(){
-      app.TestSwitch.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
-      app.TestSwitch2.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
-      app.TestSwitch3.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
-      app.TestSwitch4.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
-      app.TestSwitch5.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
-      app.TestSwitch6.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0");
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
+      app.TestSwitch4.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
+      app.TestSwitch5.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
+      app.TestSwitch6.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
+      app.TestSwitch7.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
+      app.TestSwitch8.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
       
       app.TestSwitch.refresh();
       app.TestSwitch2.refresh();
@@ -283,9 +329,12 @@ var IncomeFilter = {
       app.TestSwitch4.refresh();
       app.TestSwitch5.refresh();
       app.TestSwitch6.refresh();
+      app.TestSwitch7.refresh();
+      app.TestSwitch8.refresh();
       HispPopDp.selectedIndex=0;
       BroadbandDp.selectedIndex=0;
       IncomeDp.selectedIndex=0;
+      PopDensityDp.selectedIndex=0;
          }); 
 
 
@@ -301,6 +350,7 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch3)
      app.map.removeLayer(app.TestSwitch5)
      app.map.removeLayer(app.TestSwitch6)
+     app.map.removeLayer(app.TestSwitch7)
 
      app.map.addLayer(app.TestSwitch);
      app.map.addLayer(app.TestSwitch4);
@@ -374,6 +424,7 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch);
      app.map.removeLayer(app.TestSwitch3);
      app.map.removeLayer(app.TestSwitch4);
+     app.map.removeLayer(app.TestSwitch7);
 
      app.map.addLayer(app.TestSwitch2);
      app.map.addLayer(app.TestSwitch5);
@@ -454,6 +505,7 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch);
      app.map.removeLayer(app.TestSwitch4);
      app.map.removeLayer(app.TestSwitch5);
+     app.map.removeLayer(app.TestSwitch7);
      
      app.map.addLayer(app.TestSwitch3);
      app.map.addLayer(app.TestSwitch6);
@@ -528,6 +580,98 @@ var IncomeFilter = {
     
     
     
+    // Add Population Density Button
+     Button4.addEventListener('click', function(e){
+     app.outFields = ["urban_pct"];
+     app.map.removeLayer(app.TestSwitch2);
+     app.map.removeLayer(app.TestSwitch);
+     app.map.removeLayer(app.TestSwitch4);
+     app.map.removeLayer(app.TestSwitch5);
+     app.map.removeLayer(app.TestSwitch3);
+     app.map.removeLayer(app.TestSwitch6);
+     
+     
+     app.map.addLayer(app.TestSwitch7);
+     app.map.addLayer(app.TestSwitch8);
+     app.legend.refresh();
+     app.TestSwitch7.refresh();
+     app.TestSwitch8.refresh();
+
+     var symbol = new SimpleFillSymbol();
+     symbol.setColor(new Color([150, 150, 150, 0.5]));
+ 
+     var classDef = new ClassBreaksRenderer(symbol, "urban_pct");
+     classDef.addBreak({minValue: 0, maxValue: .4, label: "Rural", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)"))});
+     classDef.addBreak({minValue: .41, maxValue: .8, label: "Suburban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)"))});
+     classDef.addBreak({minValue: .81, maxValue: 1, label: "Urban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)"))});
+     classDef.defaultLabel = null;
+     classDef.defaultSymbol = null;
+
+     app.TestSwitch8.setRenderer(classDef);
+     app.TestSwitch8.redraw();
+   
+     app.map.on("extent-change", function(e) {
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch8.visibleAtMapScale;
+     if (CountyLayerVisible == true && Button4.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch8;
+     app.legend.refresh()}
+     else if (Button4.checked == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch7;
+     app.legend.refresh()};
+     });
+     
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch8.visibleAtMapScale;
+     if (CountyLayerVisible == true) {
+     app.legend.layerInfos[0].layer = app.TestSwitch8;
+     app.legend.refresh()}
+     else {
+     app.legend.layerInfos[0].layer = app.TestSwitch7;
+     app.legend.refresh()};
+
+
+   
+     var symbol2 = new SimpleFillSymbol();
+     symbol2.setColor(new Color([150, 150, 150, 0.5]));
+
+     var classDef2 = new ClassBreaksRenderer(symbol, "urban_pct");
+     classDef2.addBreak({minValue: 0, maxValue: .4, label: "Rural", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)"))});
+     classDef2.addBreak({minValue: .41, maxValue: .8, label: "Suburban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)"))});
+     classDef2.addBreak({minValue: .81, maxValue: 1, label: "Urban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)"))});
+     classDef2.defaultLabel = null;
+     classDef2.defaultSymbol = null;
+     
+     app.TestSwitch7.setRenderer(classDef2);
+     app.TestSwitch7.redraw();
+ 
+     });
+    
+    
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -552,8 +696,9 @@ var IncomeFilter = {
     var BBTractLayerVisible = app.TestSwitch6.visibleAtMapScale;
    app.map.on("extent-change", function(e) {
    console.log(app.TestSwitch4.visibleAtMapScale);
-   if  (HispPopTractLayerVisible == false){
-    HispPopDp.style.visibility = "hidden"
+   if  (HispPopTractLayerVisible == true){
+    document.getElementById("resetButton").style.visibility = "hidden"
+    HispPopDp.style.display = "none"
     }});
     
     
