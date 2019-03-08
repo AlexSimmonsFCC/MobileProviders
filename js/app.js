@@ -11,7 +11,7 @@ require([
   "dojo/parser", "dojo/_base/array", "esri/Color",
   "dojo/dom", "dojo/dom-construct", "dojo/number",
   "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect", "esri/tasks/QueryTask","esri/renderers/ClassBreaksRenderer","esri/geometry/scaleUtils",
-  "esri/layers/layer",
+  "esri/layers/layer", "esri/dijit/Search",
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
   "dojo/domReady!"
 
@@ -24,7 +24,7 @@ require([
   PopupTemplate, Legend,
   parser, arrayUtils, Color,
   dom, domConstruct, number,
-  ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer
+  ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer, Search
 ) {
 
   parser.parse();
@@ -171,13 +171,27 @@ require([
    //Add Options to Dropdown Select List 
    var HispanicPopulationFilter = {
     '>= 0' : 'Any',
-    '< 200' : '< 2000',
+    '< 2000' : '< 2000',
     '> 2000 AND "C_TotLatPo" < 11000' : '2,001 - 11,000',
     '> 11001 AND "C_TotLatPo" < 23000'  : '11,001 - 23,000',
     '> 23001 AND "C_TotLatPo" < 65000'  : '23,001 - 65,000',
     '> 65001 AND "C_TotLatPo" < 500000'  : '65,001 - 500,000',
     '> 500000 AND "C_TotLatPo" < 5000000'  : '500,000 - 5,000,000',
 }
+
+  var HispanicPopulationFilterTract = {
+    '>= 0' : 'Any',
+    '< 400' : '< 400',
+    '> 401 AND "C_TotLatPo" < 800' : '401 - 800',
+    '> 801 AND "C_TotLatPo" < 1701'  : '801 - 1,701',
+    '> 1702 AND "C_TotLatPo" < 2800'  : '1,702 - 2,800',
+    '> 2801 AND "C_TotLatPo" < 4100'  : '2,801 - 4,100',
+    '> 4101 AND "C_TotLatPo" < 6101'  : '4,101 - 6,101',
+    '> 6101 AND "C_TotLatPo" < 14100'  : '6,101 - 14,100',
+}
+
+
+
 
    var BroadbandSpeedFilter = {
     '>= 0' : 'Any',
@@ -532,7 +546,15 @@ var IncomeFilter = {
     
     
     
-    
+    // Hide/Show Tract and County HIspanic Popultion Select
+    var HispPopTractLayerVisible = app.TestSwitch4.visibleAtMapScale;
+    var HispPctPopTractLayerVisible = app.TestSwitch5.visibleAtMapScale;
+    var BBTractLayerVisible = app.TestSwitch6.visibleAtMapScale;
+   app.map.on("extent-change", function(e) {
+   console.log(app.TestSwitch4.visibleAtMapScale);
+   if  (HispPopTractLayerVisible == false){
+    HispPopDp.style.visibility = "hidden"
+    }});
     
     
     
@@ -613,8 +635,6 @@ var IncomeFilter = {
      classDef2.defaultSymbol = null;
      app.TestSwitch4.setRenderer(classDef2);
      app.TestSwitch4.redraw();
-
-
 
       });
     });
