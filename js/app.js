@@ -433,16 +433,10 @@ var IncomeFilter = {
      symbol.setColor(new Color([150, 150, 150, 0.5]));
  
      var classDef = new ClassBreaksRenderer(symbol, "MaxAvgWeig");
-     classDef.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(35,35,35)")));
-     classDef.addBreak(101, 200, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(56,66,51)")));
-     classDef.addBreak(201, 300, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(60,82,50)")));
-     classDef.addBreak(301, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(65,99,49)")));
-     classDef.addBreak(401, 500, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(70,120,48)")));
-     classDef.addBreak(501, 600, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(72,138,44)")));
-     classDef.addBreak(601, 700, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(74,161,40)")));
-     classDef.addBreak(701, 800, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,181,34)")));
-     classDef.addBreak(801, 900, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,207,25)")));
-     classDef.addBreak(901, 1000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,230,0)")));
+     classDef.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(79,79,79)")));
+     classDef.addBreak(101, 250, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(87,125,69)")));
+     classDef.addBreak(251, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(87,173,50)")));
+     classDef.addBreak(401, 1000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,230,0)")));
      classDef.defaultLabel = null;
      classDef.defaultSymbol = null;
 
@@ -475,16 +469,10 @@ var IncomeFilter = {
      symbol2.setColor(new Color([150, 150, 150, 0.5]));
 
      var classDef2 = new ClassBreaksRenderer(symbol2, "MaxAvgWeig");
-     classDef2.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(35,35,35)")));
-     classDef2.addBreak(101, 200, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(56,66,51)")));
-     classDef2.addBreak(201, 300, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(60,82,50)")));
-     classDef2.addBreak(301, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(65,99,49)")));
-     classDef2.addBreak(401, 500, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(70,120,48)")));
-     classDef2.addBreak(501, 600, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(72,138,44)")));
-     classDef2.addBreak(601, 700, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(74,161,40)")));
-     classDef2.addBreak(701, 800, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,181,34)")));
-     classDef2.addBreak(801, 900, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,207,25)")));
-     classDef2.addBreak(901, 1000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,230,0)")));
+     classDef2.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(79,79,79)")));
+     classDef2.addBreak(101, 250, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(87,125,69)")));
+     classDef2.addBreak(251, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(87,173,50)")));
+     classDef2.addBreak(401, 1000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,230,0)")));
 
      classDef2.defaultLabel = null;
      classDef2.defaultSymbol = null;
