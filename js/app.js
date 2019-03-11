@@ -219,16 +219,10 @@ require([
 
    var BroadbandSpeedFilter = {
     '>= 0' : 'Any',
-    '> 0 AND "MaxAvgWeig" < 100' : '0 - 100',
-    '> 101 AND "MaxAvgWeig" < 200' : '101 - 200',
-    '> 201 AND "MaxAvgWeig" < 300'  : '201 - 300',
-    '> 301 AND "MaxAvgWeig" < 400'  : '301 - 400',
-    '> 401 AND "MaxAvgWeig" < 500'  : '401 - 500',
-    '> 501 AND "MaxAvgWeig" < 600'  : '501 - 600',
-    '> 601 AND "MaxAvgWeig" < 700'  : '601 - 700',
-    '> 701 AND "MaxAvgWeig" < 800'  : '701 - 800',
-    '> 801 AND "MaxAvgWeig" < 900'  : '801 - 900',
-    '> 901 AND "MaxAvgWeig" < 1000'  : '901 - 1000',
+    '> 0 AND "MaxAvgWeig" < 100' : 'Limited Access',
+    '> 101 AND "MaxAvgWeig" < 250' : 'Typical Household',
+    '> 251 AND "MaxAvgWeig" < 400'  : 'Specialized Uses',
+    '> 401 AND "MaxAvgWeig" < 1000'  : 'Business Broadband',
 
 }
 
