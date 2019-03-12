@@ -1,5 +1,3 @@
-
-
 var app = {};
 require([
   "esri/map", "esri/tasks/query",
@@ -11,7 +9,10 @@ require([
   "dojo/parser", "dojo/_base/array", "esri/Color",
   "dojo/dom", "dojo/dom-construct", "dojo/number",
   "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect", "esri/tasks/QueryTask","esri/renderers/ClassBreaksRenderer","esri/geometry/scaleUtils",
-  "esri/layers/layer", "esri/dijit/Search",
+  "esri/layers/layer", "esri/dijit/Search","esri/dijit/FeatureTable", "esri/geometry/webMercatorUtils",
+ "dojo/_base/lang",
+  
+  
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
   "dojo/domReady!"
 
@@ -24,7 +25,8 @@ require([
   PopupTemplate, Legend,
   parser, arrayUtils, Color,
   dom, domConstruct, number,
-  ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer, Search
+  ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer, Search,
+  FeatureTable, webMercatorUtils, lang,
 ) {
 
   parser.parse();
@@ -43,6 +45,9 @@ require([
     zoom: 5,
     slider: true
   });
+  
+  
+  
   
   // Instantiate Basemaps
    var basemap = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer");
@@ -86,22 +91,21 @@ require([
   showAttachments: true,
   });
   
-  
-  
-  
-  
-  
+
   
   // Create Feature Layers
-  app.map.on("load", function () {
+  
+  app.map.on("load", function (e) {
+  console.log(e);
 
-      app.TestSwitch = new FeatureLayer(app.TestSwitch, {
+
+ app.TestSwitch = new FeatureLayer(app.TestSwitch, {
       "id": "TestSwitch",
       "infoTemplate": app.popupTemplate,
       "outFields": app.outFields,
       "opacity": 0.8,
       maxScale: 1155581.108577
-      } )
+      } )  
     
       app.TestSwitch2 = new FeatureLayer(app.TestSwitch2, {
       "id": "TestSwitch2",
@@ -160,11 +164,15 @@ require([
       "opacity": 0.8,
       minScale: 577790.554289
       } )
-     
-     
-     
-     
-     
+
+
+
+
+        
+ 
+
+        
+        
 
     // Get DOM elements
    
@@ -178,6 +186,7 @@ require([
      var BroadbandDp = document.getElementById("BroadbandSpeed");
      var IncomeDp = document.getElementById("Income");
      var PopDensityDp = document.getElementById("PopDensity");
+     var CountiesDisplayed = document.getElementById("Summary");
 
 
     //Add Layers to Map
@@ -364,7 +373,7 @@ var IncomeFilter = {
 
      app.TestSwitch.setRenderer(classDef);
      app.TestSwitch.redraw();
-/*      createLegend(app.map, app.TestSwitch4); */
+
   
      app.map.on("extent-change", function(e) {
      var currentScale = app.map.getScale();
@@ -417,6 +426,7 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch3);
      app.map.removeLayer(app.TestSwitch4);
      app.map.removeLayer(app.TestSwitch7);
+     app.map.removeLayer(app.TestSwitch8);
 
      app.map.addLayer(app.TestSwitch2);
      app.map.addLayer(app.TestSwitch5);
@@ -438,14 +448,28 @@ var IncomeFilter = {
      app.TestSwitch2.redraw();
    
      app.map.on("extent-change", function(e) {
+     var query = new Query();
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch2.visibleAtMapScale;
-     if (CountyLayerVisible == true && Button2.checked == true) {
+     if  (CountyLayerVisible == true && Button2.checked == true){
      app.legend.layerInfos[0].layer = app.TestSwitch2;
-     app.legend.refresh()}
-     else if (Button2.checked == true) {
+     app.legend.refresh();
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch2.queryIds(query, lang.hitch(this, function(objectIds) {  
+     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+     }
+     else if (CountyLayerVisible == false && Button2.checked == true) {
+     console.log('Is the county layer visible? ' + CountyLayerVisible)
      app.legend.layerInfos[0].layer = app.TestSwitch5;
-     app.legend.refresh()};
+     app.legend.refresh()
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch5.queryIds(query, lang.hitch(this, function(objectIds2) {  
+     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
+                }))};
      });
      
      var currentScale = app.map.getScale();
@@ -456,7 +480,6 @@ var IncomeFilter = {
      else {
      app.legend.layerInfos[0].layer = app.TestSwitch5;
      app.legend.refresh()};
-
 
    
      var symbol2 = new SimpleFillSymbol();
@@ -473,6 +496,7 @@ var IncomeFilter = {
      
      app.TestSwitch5.setRenderer(classDef2);
      app.TestSwitch5.redraw();
+
     });
   
   
@@ -514,16 +538,28 @@ var IncomeFilter = {
      app.TestSwitch3.redraw();
    
      app.map.on("extent-change", function(e) {
+     var query = new Query();
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch3.visibleAtMapScale;
-     if (CountyLayerVisible == true && Button3.checked == true) {
+     if  (CountyLayerVisible == true && Button3.checked == true){
      app.legend.layerInfos[0].layer = app.TestSwitch3;
-     app.legend.refresh()}
-     else if (Button3.checked == true) {
+     app.legend.refresh();
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch3.queryIds(query, lang.hitch(this, function(objectIds) {  
+     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+     }
+     else if (CountyLayerVisible == false && Button2.checked == true) {
      app.legend.layerInfos[0].layer = app.TestSwitch6;
-     app.legend.refresh()};
+     app.legend.refresh()
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch6.queryIds(query, lang.hitch(this, function(objectIds2) {  
+     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
+                }))};
      });
-     
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch3.visibleAtMapScale;
      if (CountyLayerVisible == true) {
@@ -532,7 +568,6 @@ var IncomeFilter = {
      else {
      app.legend.layerInfos[0].layer = app.TestSwitch6;
      app.legend.refresh()};
-
 
    
      var symbol2 = new SimpleFillSymbol();
@@ -591,14 +626,27 @@ var IncomeFilter = {
      app.TestSwitch8.redraw();
    
      app.map.on("extent-change", function(e) {
+     var query = new Query();
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch8.visibleAtMapScale;
-     if (CountyLayerVisible == true && Button4.checked == true) {
+     if  (CountyLayerVisible == true && Button4.checked == true){
      app.legend.layerInfos[0].layer = app.TestSwitch8;
-     app.legend.refresh()}
-     else if (Button4.checked == true) {
+     app.legend.refresh();
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch8.queryIds(query, lang.hitch(this, function(objectIds) {  
+     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+     }
+     else if (CountyLayerVisible == false && Button4.checked == true) {
      app.legend.layerInfos[0].layer = app.TestSwitch7;
-     app.legend.refresh()};
+     app.legend.refresh()
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch7.queryIds(query, lang.hitch(this, function(objectIds2) {  
+     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
+                }))};
      });
      
      var currentScale = app.map.getScale();
@@ -627,72 +675,8 @@ var IncomeFilter = {
  
      });
     
-    
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // Hide/Show Tract and County HIspanic Popultion Select
-    var HispPopTractLayerVisible = app.TestSwitch4.visibleAtMapScale;
-    var HispPctPopTractLayerVisible = app.TestSwitch5.visibleAtMapScale;
-    var BBTractLayerVisible = app.TestSwitch6.visibleAtMapScale;
-   app.map.on("extent-change", function(e) {
-   console.log(app.TestSwitch4.visibleAtMapScale);
-   if  (HispPopTractLayerVisible == true){
-    document.getElementById("resetButton").style.visibility = "hidden"
-    HispPopDp.style.display = "none"
-    }});
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
     
     //Render County Hispanic Population Layer on Page Load
      
@@ -716,17 +700,6 @@ var IncomeFilter = {
      app.TestSwitch.setRenderer(classDef);
      app.TestSwitch.redraw();
 
-
-     app.map.on("extent-change", function(e) {
-     var currentScale = app.map.getScale();
-     var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
-     if  (CountyLayerVisible == true && Button1.checked == true)  {
-     app.legend.layerInfos[0].layer = app.TestSwitch;
-     app.legend.refresh()}
-     else if (Button1.checked == true) {
-     app.legend.layerInfos[0].layer = app.TestSwitch4;
-     app.legend.refresh()}
-     });
       
 
      var legendDiv = domConstruct.create("div", {
@@ -760,9 +733,52 @@ var IncomeFilter = {
      classDef2.defaultSymbol = null;
      app.TestSwitch4.setRenderer(classDef2);
      app.TestSwitch4.redraw();
-
+     
+     
+     
+     // Get Number of Counties or Tracts After Page Load on Extent Change Event For TestSwitch
+     
+    myFeatureTable = new FeatureTable({  
+    "featureLayer" : app.TestSwitch,  
+    "outFields":  ["*"],  
+    "map" : app.map,  
+    "gridOptions": {}});
+   
+   
+    var query = new Query();  
+    query.geometry = e.extent;  
+    query.where = '1=1';
+    query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+    app.TestSwitch.queryIds(query, lang.hitch(this, function(objectIds) {  
+    document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length 
+                })); 
+     
+     
+     app.map.on("extent-change", function(e) {
+     var query = new Query();
+     var currentScale = app.map.getScale();
+     var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+     if  (CountyLayerVisible == true && Button1.checked == true){
+     app.legend.layerInfos[0].layer = app.TestSwitch;
+     app.legend.refresh();
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch.queryIds(query, lang.hitch(this, function(objectIds) {  
+     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+     }
+     else if (CountyLayerVisible == false && Button1.checked == true) {
+     console.log('Is the county layer visible? ' + CountyLayerVisible)
+     app.legend.layerInfos[0].layer = app.TestSwitch4;
+     app.legend.refresh()
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch4.queryIds(query, lang.hitch(this, function(objectIds2) {  
+     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
+                }))};
+     });
       });
     });
     
-  
-  
+    
