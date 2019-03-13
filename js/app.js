@@ -10,7 +10,7 @@ require([
   "dojo/dom", "dojo/dom-construct", "dojo/number",
   "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect", "esri/tasks/QueryTask","esri/renderers/ClassBreaksRenderer","esri/geometry/scaleUtils",
   "esri/layers/layer", "esri/dijit/Search","esri/dijit/FeatureTable", "esri/geometry/webMercatorUtils",
- "dojo/_base/lang",
+ "dojo/_base/lang", "esri/tasks/StatisticDefinition",
   
   
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
@@ -26,7 +26,7 @@ require([
   parser, arrayUtils, Color,
   dom, domConstruct, number,
   ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer, Search,
-  FeatureTable, webMercatorUtils, lang,
+  FeatureTable, webMercatorUtils, lang, StatisticDefinition,
 ) {
 
   parser.parse();
@@ -421,6 +421,8 @@ var IncomeFilter = {
   
      // Broadband Speed Button
      Button2.addEventListener('click', function(e){
+
+     // Remove Unwanted Layers
      app.outFields = ["MaxAvgWeig"];
      app.map.removeLayer(app.TestSwitch);
      app.map.removeLayer(app.TestSwitch3);
@@ -428,14 +430,17 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch7);
      app.map.removeLayer(app.TestSwitch8);
 
+    // Add Residres Layers and Refresh Them
      app.map.addLayer(app.TestSwitch2);
      app.map.addLayer(app.TestSwitch5);
      app.legend.refresh();
      app.TestSwitch2.refresh();
 
+    // Add Fill Symbol and Color It for Counties
      var symbol = new SimpleFillSymbol();
      symbol.setColor(new Color([150, 150, 150, 0.5]));
- 
+    
+    // Set Break Values and Color Values for Counties 
      var classDef = new ClassBreaksRenderer(symbol, "MaxAvgWeig");
      classDef.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(79,79,79)")));
      classDef.addBreak(101, 250, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(87,125,69)")));
@@ -444,34 +449,54 @@ var IncomeFilter = {
      classDef.defaultLabel = null;
      classDef.defaultSymbol = null;
 
+    // Apply Breaks and Color Values to the Renderer and Apply the Renderer to the Layer
      app.TestSwitch2.setRenderer(classDef);
      app.TestSwitch2.redraw();
    
+    // Change the Legend and Summary Statistics When Counties/Tracts are Displayed
      app.map.on("extent-change", function(e) {
-     var query = new Query();
+     
+     var queryCount = new Query();
+     var queryPopSum = new Query();
+     var TotPopDef = new StatisticDefinition();
+     TotPopDef.statisticType = "sum";
+     TotPopDef.onStatisticField = 'C_TotPop';
+     TotPopDef.outStatisticFieldName = "TotPop";
+     queryPopSum.geometry = e.extent;  
+     queryPopSum.where = '1=1';
+     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
+     queryPopSum.outStatistics = [TotPopDef];
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch2.visibleAtMapScale;
+     function getStats(results){
+     var stats = results.features[0].attributes;
+     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
+
      if  (CountyLayerVisible == true && Button2.checked == true){
      app.legend.layerInfos[0].layer = app.TestSwitch2;
      app.legend.refresh();
-     query.geometry = e.extent;  
-     query.where = '1=1';
-     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch2.queryIds(query, lang.hitch(this, function(objectIds) {  
+     queryCount.geometry = e.extent;  
+     queryCount.where = '1=1';
+     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch2.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
      document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+     app.TestSwitch2.queryFeatures(queryPopSum, getStats);
      }
+     
      else if (CountyLayerVisible == false && Button2.checked == true) {
-     console.log('Is the county layer visible? ' + CountyLayerVisible)
      app.legend.layerInfos[0].layer = app.TestSwitch5;
      app.legend.refresh()
-     query.geometry = e.extent;  
-     query.where = '1=1';
-     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch5.queryIds(query, lang.hitch(this, function(objectIds2) {  
+     queryCount.geometry = e.extent;  
+     queryCount.where = '1=1';
+     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
      document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
+     app.TestSwitch5.queryFeatures(queryPopSum, getStats);
                 }))};
+   
      });
      
+     // Change the Legend to Counties or Tracts on Button Click Event
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch2.visibleAtMapScale;
      if (CountyLayerVisible == true) {
@@ -481,19 +506,22 @@ var IncomeFilter = {
      app.legend.layerInfos[0].layer = app.TestSwitch5;
      app.legend.refresh()};
 
-   
+    // Create Fill Symbol and Color it for Tracts
      var symbol2 = new SimpleFillSymbol();
      symbol2.setColor(new Color([150, 150, 150, 0.5]));
 
+   // Set Break Values and Color Values for Tracts 
      var classDef2 = new ClassBreaksRenderer(symbol2, "MaxAvgWeig");
      classDef2.addBreak(0, 100, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(79,79,79)")));
      classDef2.addBreak(101, 250, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(87,125,69)")));
      classDef2.addBreak(251, 400, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(87,173,50)")));
      classDef2.addBreak(401, 1000, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(76,230,0)")));
 
+   // Set Default Values to Null. This prevents 'others' from auto-rendering as a null category
      classDef2.defaultLabel = null;
      classDef2.defaultSymbol = null;
      
+   //Apply colors to renderer, apply renderer to layer, refersh layer.  
      app.TestSwitch5.setRenderer(classDef2);
      app.TestSwitch5.redraw();
 
@@ -736,48 +764,108 @@ var IncomeFilter = {
      
      
      
-     // Get Number of Counties or Tracts After Page Load on Extent Change Event For TestSwitch
      
+     
+     
+     
+     
+
+    
+     
+     
+     
+     
+     
+    // Get Number of Counties or Tracts After Page Load and on Extent Change Event For TestSwitch
+    // Get Summary Statistics for Counties or Tracts after Page Load and on Change Event For TestSwitch
+     
+    // Create Feature Table
     myFeatureTable = new FeatureTable({  
     "featureLayer" : app.TestSwitch,  
     "outFields":  ["*"],  
     "map" : app.map,  
     "gridOptions": {}});
    
-   
-    var query = new Query();  
-    query.geometry = e.extent;  
-    query.where = '1=1';
-    query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-    app.TestSwitch.queryIds(query, lang.hitch(this, function(objectIds) {  
-    document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length 
+   // Create Queries for Summary Statistics
+    var queryCount = new Query(); 
+    var queryPopSum = new Query();
+    
+   // Set Statistics Definitions 
+    var TotPopDef = new StatisticDefinition();
+    TotPopDef.statisticType = "sum";
+    TotPopDef.onStatisticField = 'C_TotPop';
+    TotPopDef.outStatisticFieldName = "TotPop"; 
+    
+    // Set Query Parameters for Number of Counties or Tracts
+    queryCount.geometry = e.extent;  
+    queryCount.where = '1=1';
+    queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+
+    // Set Query Parameters for Sum of Population
+    queryPopSum.geometry = e.extent;  
+    queryPopSum.where = '1=1';
+    queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
+    queryPopSum.outStatistics = [TotPopDef];
+
+   // Execute Statistics Query against TestSwitch and call results into HTML Display
+    app.TestSwitch.queryFeatures(queryPopSum, getStats);
+    function getStats(results){
+    var stats = results.features[0].attributes;
+    document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed on Load: " + stats.TotPop;};
+
+  // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
+    app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+    document.getElementById("SummaryText").innerHTML = "Counties Displayed on Load: "  + objectIds.length 
                 })); 
      
-     
+     // Do all of the above for if/else statement for counties and tracts
+     // Change Legend for Counties and Tracts
      app.map.on("extent-change", function(e) {
-     var query = new Query();
+     var queryCount = new Query();
+     var queryPopSum = new Query();
+     var TotPopDef = new StatisticDefinition();
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+     function getStats(results){
+     var stats = results.features[0].attributes;
+     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed On Extent Change: " + stats.TotPop;};
+     
      if  (CountyLayerVisible == true && Button1.checked == true){
+     TotPopDef.statisticType = "sum";
+     TotPopDef.onStatisticField = 'C_TotPop';
+     TotPopDef.outStatisticFieldName = "TotPop";
+     queryPopSum.geometry = e.extent;  
+     queryPopSum.where = '1=1';
+     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
+     queryPopSum.outStatistics = [TotPopDef];
      app.legend.layerInfos[0].layer = app.TestSwitch;
      app.legend.refresh();
-     query.geometry = e.extent;  
-     query.where = '1=1';
-     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch.queryIds(query, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+     queryCount.geometry = e.extent;  
+     queryCount.where = '1=1';
+     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS; 
+     app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+     document.getElementById("SummaryText").innerHTML = "Counties Displayed on Extent Change: "  + objectIds.length}));
+     app.TestSwitch.queryFeatures(queryPopSum, getStats); 
      }
      else if (CountyLayerVisible == false && Button1.checked == true) {
-     console.log('Is the county layer visible? ' + CountyLayerVisible)
+     console.log('HereIam')
+     TotPopDef.statisticType = "sum";
+     TotPopDef.onStatisticField = 'T_TotPop';
+     TotPopDef.outStatisticFieldName = "TotPop";
+     queryPopSum.geometry = e.extent;  
+     queryPopSum.where = '1=1';
+     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
+     queryPopSum.outStatistics = [TotPopDef];
      app.legend.layerInfos[0].layer = app.TestSwitch4;
      app.legend.refresh()
-     query.geometry = e.extent;  
-     query.where = '1=1';
-     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch4.queryIds(query, lang.hitch(this, function(objectIds2) {  
-     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
+     queryCount.geometry = e.extent;  
+     queryCount.where = '1=1';
+     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
+     app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
+     document.getElementById("SummaryText").innerHTML = "Tracts Displayed on Extent Change: "  + objectIds2.length 
+     app.TestSwitch4.queryFeatures(queryPopSum, getStats);
                 }))};
-     });
+       });
       });
     });
     
