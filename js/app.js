@@ -314,7 +314,12 @@ var IncomeFilter = {
         app.TestSwitch6.refresh();
         app.TestSwitch7.refresh();
         app.TestSwitch8.refresh();
-        var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+        var HispanicPopulationLayer = app.TestSwitch.visibleAtMapScale;
+        var HispanicPopulationPercentLayer = app.TestSwitch3.visibleAtMapScale;
+        var BroadbandSpeedLayer = app.TestSwitch2.visibleAtMapScale;
+        var PopulationDensityLayer = app.TestSwitch8.visibleAtMapScale;
+        
+        
         var queryCount = new Query();
         var queryPopSum = new Query();
         var TotPopDef = new StatisticDefinition();
@@ -332,18 +337,87 @@ var IncomeFilter = {
         function getStats(results){
         var stats = results.features[0].attributes;
         document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
-        app.TestSwitch.queryFeatures(queryPopSum, getStats);
+    /*     app.TestSwitch.queryFeatures(queryPopSum, getStats); */
                 
-        app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}))
+/*      app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length})) */
         
-        if (CountyLayerVisible == true && Button1.checked == true){
+        if (HispanicPopulationLayer == true && Button1.checked == true){
         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
         document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch.queryFeatures(queryPopSum, getStats);
         }
-        else if (CountyLayerVisible == false && Button1.checked == true) {         
+        else if (HispanicPopulationLayer == false && Button1.checked == true) {         
         app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));}     
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch4.queryFeatures(queryPopSum, getStats);
+        }     
+        
+        if (HispanicPopulationPercentLayer == true && Button3.checked == true){
+        app.TestSwitch3.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch3.queryFeatures(queryPopSum, getStats);
+        }
+        else if (HispanicPopulationPercentLayer == false && Button3.checked == true) {         
+        app.TestSwitch6.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch6.queryFeatures(queryPopSum, getStats);
+        } 
+       
+        if (BroadbandSpeedLayer == true && Button2.checked == true){
+        app.TestSwitch2.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch2.queryFeatures(queryPopSum, getStats);
+        }
+        else if (BroadbandSpeedLayer == false && Button2.checked == true) {         
+        app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch5.queryFeatures(queryPopSum, getStats);
+        } 
+       
+        if (PopulationDensityLayer == true && Button4.checked == true){
+        app.TestSwitch8.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch8.queryFeatures(queryPopSum, getStats);
+        }
+        else if (PopulationDensityLayer == false && Button4.checked == true) {         
+        app.TestSwitch7.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch7.queryFeatures(queryPopSum, getStats);
+        } 
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
        },
       );
     
@@ -372,7 +446,10 @@ var IncomeFilter = {
       PopDensityDp.selectedIndex=0;
       
       
-        var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+        var HispanicPopulationLayer = app.TestSwitch.visibleAtMapScale;
+        var HispanicPopulationPercentLayer = app.TestSwitch3.visibleAtMapScale;
+        var BroadbandSpeedLayer = app.TestSwitch2.visibleAtMapScale;
+        var PopulationDensityLayer = app.TestSwitch8.visibleAtMapScale;
         var queryCount = new Query();
         var queryPopSum = new Query();
         var TotPopDef = new StatisticDefinition();
@@ -392,16 +469,66 @@ var IncomeFilter = {
         document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
         app.TestSwitch.queryFeatures(queryPopSum, getStats);
                 
-        app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}))
+
         
-        if (CountyLayerVisible == true && Button1.checked == true){
+        if (HispanicPopulationLayer == true && Button1.checked == true){
         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
         document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch.queryFeatures(queryPopSum, getStats);
         }
-        else if (CountyLayerVisible == false && Button1.checked == true) {         
+        else if (HispanicPopulationLayer == false && Button1.checked == true) {         
         app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));}     
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch4.queryFeatures(queryPopSum, getStats);
+        }     
+        
+        if (HispanicPopulationPercentLayer == true && Button3.checked == true){
+        app.TestSwitch3.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch3.queryFeatures(queryPopSum, getStats);
+        }
+        else if (HispanicPopulationPercentLayer == false && Button3.checked == true) {         
+        app.TestSwitch6.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch6.queryFeatures(queryPopSum, getStats);
+        }    
+        
+        if (BroadbandSpeedLayer == true && Button2.checked == true){
+        app.TestSwitch2.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch2.queryFeatures(queryPopSum, getStats);
+        }
+        else if (BroadbandSpeedLayer == false && Button2.checked == true) {         
+        app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch5.queryFeatures(queryPopSum, getStats);
+        } 
+        
+        if (PopulationDensityLayer == true && Button4.checked == true){
+        app.TestSwitch8.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
+        app.TestSwitch8.queryFeatures(queryPopSum, getStats);
+        }
+        else if (PopulationDensityLayer == false && Button4.checked == true) {         
+        app.TestSwitch7.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
+        app.TestSwitch7.queryFeatures(queryPopSum, getStats);
+        } 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
        },
       );
 
