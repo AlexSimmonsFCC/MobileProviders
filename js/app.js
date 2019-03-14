@@ -337,10 +337,7 @@ var IncomeFilter = {
         function getStats(results){
         var stats = results.features[0].attributes;
         document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
-    /*     app.TestSwitch.queryFeatures(queryPopSum, getStats); */
-                
-/*      app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length})) */
+
         
         if (HispanicPopulationLayer == true && Button1.checked == true){
         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
@@ -385,39 +382,7 @@ var IncomeFilter = {
         document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
         app.TestSwitch7.queryFeatures(queryPopSum, getStats);
         } 
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
+ 
        },
       );
     
@@ -514,21 +479,6 @@ var IncomeFilter = {
         document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
         app.TestSwitch7.queryFeatures(queryPopSum, getStats);
         } 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
        },
       );
 
@@ -1020,14 +970,7 @@ var IncomeFilter = {
      app.TestSwitch4.redraw();
      
      
-     
-     
-     
-     
-     
-     
 
-    
      
      
      
@@ -1046,12 +989,23 @@ var IncomeFilter = {
    // Create Queries for Summary Statistics
     var queryCount = new Query(); 
     var queryPopSum = new Query();
+    var C_queryLatPopSum = new Query(); 
     
-   // Set Statistics Definitions 
+   // Set Statistics Definition for Total Population
     var TotPopDef = new StatisticDefinition();
     TotPopDef.statisticType = "sum";
     TotPopDef.onStatisticField = 'C_TotPop';
     TotPopDef.outStatisticFieldName = "TotPop"; 
+    
+   // Set Statistics Definition for Total County Latino Population
+    var C_LatTotPopDef = new StatisticDefinition();
+    C_LatTotPopDef.statisticType = "sum";
+    C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
+    C_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop";
+    
+    
+    
+    
     
     // Set Query Parameters for Number of Counties or Tracts
     queryCount.geometry = app.map.extent;  
@@ -1063,16 +1017,31 @@ var IncomeFilter = {
     queryPopSum.where = '1=1';
     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
     queryPopSum.outStatistics = [TotPopDef];
+    
+    // Set Query Parameters for Sum of County Latino Population
+    C_queryLatPopSum.geometry = app.map.extent;  
+    C_queryLatPopSum.where = '1=1';
+    C_queryLatPopSum.spatialRelationship = C_queryLatPopSum.SPATIAL_REL_CONTAINS
+    C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
+    
+    
 
    // Execute Statistics Query against TestSwitch and call results into HTML Display
 
-    function getStats(results){
+    function getTotalPopulation(results){
     var stats = results.features[0].attributes;
-    document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed on Load: " + stats.TotPop;};
-    app.TestSwitch.queryFeatures(queryPopSum, getStats);
+    document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop};
+    app.TestSwitch.queryFeatures(queryPopSum, getTotalPopulation); 
+    
+    function getTotalLatinoPopulation(results2){
+    var stats = results2.features[0].attributes;
+    document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
+    app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation); 
+    
+  
   // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
     app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-    document.getElementById("SummaryText").innerHTML = "Counties Displayed on Load: "  + objectIds.length 
+    document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length 
                 })); 
      
      // Do all of the above for if/else statement for counties and tracts
@@ -1085,7 +1054,7 @@ var IncomeFilter = {
      var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
      function getStats(results){
      var stats = results.features[0].attributes;
-     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed On Extent Change: " + stats.TotPop;};
+     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
      
      if  (CountyLayerVisible == true && Button1.checked == true){
      TotPopDef.statisticType = "sum";
@@ -1101,7 +1070,7 @@ var IncomeFilter = {
      queryCount.where = '1=1';
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS; 
      app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "Counties Displayed on Extent Change: "  + objectIds.length}));
+     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
      app.TestSwitch.queryFeatures(queryPopSum, getStats); 
      }
      else if (CountyLayerVisible == false && Button1.checked == true) {
@@ -1119,7 +1088,7 @@ var IncomeFilter = {
      queryCount.where = '1=1';
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
      app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
-     document.getElementById("SummaryText").innerHTML = "Tracts Displayed on Extent Change: "  + objectIds2.length 
+     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
      app.TestSwitch4.queryFeatures(queryPopSum, getStats);
                 }))};
        });
