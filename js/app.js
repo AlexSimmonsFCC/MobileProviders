@@ -59,7 +59,7 @@ require([
    app.map.addLayer(ref);
 
   // Instantiate Layers
-  app.TestSwitch = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.TestSwitch =  "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
   app.TestSwitch2 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
   app.TestSwitch3 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
   app.TestSwitch4 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
@@ -314,73 +314,152 @@ var IncomeFilter = {
         app.TestSwitch6.refresh();
         app.TestSwitch7.refresh();
         app.TestSwitch8.refresh();
-        var HispanicPopulationLayer = app.TestSwitch.visibleAtMapScale;
-        var HispanicPopulationPercentLayer = app.TestSwitch3.visibleAtMapScale;
+        var HispPopLoadLayerVisible = app.TestSwitch.visibleAtMapScale;
+        var HispPopLayerVisible = app.TestSwitch.visibleAtMapScale;
+        var HispPopPctLayerVisible = app.TestSwitch3.visibleAtMapScale;
         var BroadbandSpeedLayer = app.TestSwitch2.visibleAtMapScale;
-        var PopulationDensityLayer = app.TestSwitch8.visibleAtMapScale;
+        var PopDensityLayerVisible = app.TestSwitch8.visibleAtMapScale;
         
         
         var queryCount = new Query();
-        var queryPopSum = new Query();
-        var TotPopDef = new StatisticDefinition();
-        TotPopDef.statisticType = "sum";
-        TotPopDef.onStatisticField = 'C_TotPop';
-        TotPopDef.outStatisticFieldName = "TotPop";
+        var C_queryPopSum = new Query();
+        var C_queryLatPopSum = new Query();
+        var C_queryAvgBroadbandSpeed = new Query();
+        var C_TotPopDef = new StatisticDefinition();
+        var C_LatTotPopDef = new StatisticDefinition();
+        var C_AvgBroadbandSpeedDef = new StatisticDefinition();
+        C_LatTotPopDef.statisticType = "sum";
+        C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
+        C_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop";
+        
+        
+     var T_queryPopSum = new Query();
+     var T_queryLatPopSum = new Query();
+     var T_queryAvgBroadbandSpeed = new Query();
+     var T_TotPopDef = new StatisticDefinition();
+     var T_LatTotPopDef = new StatisticDefinition();
+     var T_AvgBroadbandSpeedDef = new StatisticDefinition();
+
+    T_TotPopDef.statisticType = "sum";
+     T_TotPopDef.onStatisticField = 'T_TotPop';
+     T_TotPopDef.outStatisticFieldName = "TotPop";
+     T_LatTotPopDef.statisticType = "sum";
+     T_LatTotPopDef.onStatisticField = 'T_TotLatPo';
+     T_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop";
+     T_queryLatPopSum.geometry = app.map.extent;  
+     T_queryLatPopSum.where = '1=1';
+     T_queryLatPopSum.spatialRelationship = T_queryLatPopSum.SPATIAL_REL_CONTAINS
+     T_queryLatPopSum.outStatistics = [T_LatTotPopDef];
+     T_queryPopSum.geometry = e.extent;  
+     T_queryPopSum.where = '1=1';
+     T_queryPopSum.spatialRelationship = T_queryPopSum.SPATIAL_REL_CONTAINS
+     T_queryPopSum.outStatistics = [T_TotPopDef];
+     
+     T_AvgBroadbandSpeedDef.statisticType = "avg";
+     T_AvgBroadbandSpeedDef.onStatisticField = "MaxAvgWeig";
+     T_AvgBroadbandSpeedDef.outStatisticFieldName = "CountyAvgBroadbandSpeed";
+     T_queryAvgBroadbandSpeed.geometry = app.map.extent;
+     T_queryAvgBroadbandSpeed.where = '1=1';
+     T_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+     T_queryAvgBroadbandSpeed.outStatistics = [T_AvgBroadbandSpeedDef];
+        
+        
+        
+        C_TotPopDef.statisticType = "sum";
+        C_TotPopDef.onStatisticField = 'C_TotPop';
+        C_TotPopDef.outStatisticFieldName = "TotPop";
         queryCount.geometry = app.map.extent;  
         queryCount.where = '1=1';
         queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;
-        queryPopSum.geometry = app.map.extent;  
-        queryPopSum.where = '1=1';
-        queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-        queryPopSum.outStatistics = [TotPopDef];       
+        C_queryPopSum.geometry = app.map.extent;  
+        C_queryPopSum.where = '1=1';
+        C_queryPopSum.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+        C_queryPopSum.outStatistics = [C_TotPopDef];
+        C_queryLatPopSum.geometry = app.map.extent;  
+        C_queryLatPopSum.where = '1=1';
+        C_queryLatPopSum.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+        C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
+        C_queryAvgBroadbandSpeed.geometry = app.map.extent;  
+        C_queryAvgBroadbandSpeed.where = '1=1';
+        C_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+        C_queryAvgBroadbandSpeed.outStatistics = [C_AvgBroadbandSpeedDef];
+        C_AvgBroadbandSpeedDef.statisticType = "avg";
+        C_AvgBroadbandSpeedDef.onStatisticField = "MaxAvgWeig";
+        C_AvgBroadbandSpeedDef.outStatisticFieldName = "CountyAvgBroadbandSpeed";
+        
+        
         
         function getStats(results){
         var stats = results.features[0].attributes;
-        document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
+        document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop;};
+        
+        function getTotalLatinoPopulation(results2){
+        var stats = results2.features[0].attributes;
+        document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
+        
+        function getAverageBroadbandSpeed(results3){
+        var stats = results3.features[0].attributes;
+        document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);};
 
         
-        if (HispanicPopulationLayer == true && Button1.checked == true){
+        if (HispPopLoadLayerVisible == true && Button1.checked == true){
         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
-        else if (HispanicPopulationLayer == false && Button1.checked == true) {         
+        else if (HispPopLoadLayerVisible == false && Button1.checked == true) {         
         app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch4.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch4.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch4.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch4.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }     
         
-        if (HispanicPopulationPercentLayer == true && Button3.checked == true){
+        if (HispPopPctLayerVisible == true && Button3.checked == true){
         app.TestSwitch3.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch3.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch3.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch3.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch3.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
-        else if (HispanicPopulationPercentLayer == false && Button3.checked == true) {         
+        else if (HispPopPctLayerVisible == false && Button3.checked == true) {         
         app.TestSwitch6.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch6.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong> "  + objectIds.length}));
+        app.TestSwitch6.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch6.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch6.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         } 
        
         if (BroadbandSpeedLayer == true && Button2.checked == true){
         app.TestSwitch2.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch2.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch2.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch2.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch2.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
         else if (BroadbandSpeedLayer == false && Button2.checked == true) {         
         app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch5.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch5.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch5.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch5.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         } 
        
-        if (PopulationDensityLayer == true && Button4.checked == true){
+        if (PopDensityLayerVisible == true && Button4.checked == true){
         app.TestSwitch8.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch8.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed:</strong>"  + objectIds.length}));
+        app.TestSwitch8.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch8.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch8.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
-        else if (PopulationDensityLayer == false && Button4.checked == true) {         
+        else if (PopDensityLayerVisible == false && Button4.checked == true) {         
         app.TestSwitch7.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch7.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong>"  + objectIds.length}));
+        app.TestSwitch7.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch7.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch7.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         } 
  
        },
@@ -388,6 +467,14 @@ var IncomeFilter = {
     
 
       resetButton.addEventListener('click', function(){
+        var HispPopLoadLayerVisible = app.TestSwitch.visibleAtMapScale;
+        var HispPopLayerVisible = app.TestSwitch.visibleAtMapScale;
+        var HispPopPctLayerVisible = app.TestSwitch3.visibleAtMapScale;
+        var BroadbandSpeedLayer = app.TestSwitch2.visibleAtMapScale;
+        var PopDensityLayerVisible = app.TestSwitch8.visibleAtMapScale;
+      
+      
+      
       app.TestSwitch.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
       app.TestSwitch2.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
       app.TestSwitch3.setDefinitionExpression("C_TotLatPo >= 0 AND MaxAvgWeig >= 0 AND IncomeHH >= 0 AND urban_pct >= 0");
@@ -409,76 +496,145 @@ var IncomeFilter = {
       BroadbandDp.selectedIndex=0;
       IncomeDp.selectedIndex=0;
       PopDensityDp.selectedIndex=0;
-      
-      
-        var HispanicPopulationLayer = app.TestSwitch.visibleAtMapScale;
-        var HispanicPopulationPercentLayer = app.TestSwitch3.visibleAtMapScale;
-        var BroadbandSpeedLayer = app.TestSwitch2.visibleAtMapScale;
-        var PopulationDensityLayer = app.TestSwitch8.visibleAtMapScale;
+
         var queryCount = new Query();
-        var queryPopSum = new Query();
-        var TotPopDef = new StatisticDefinition();
-        TotPopDef.statisticType = "sum";
-        TotPopDef.onStatisticField = 'C_TotPop';
-        TotPopDef.outStatisticFieldName = "TotPop";
+        var C_queryPopSum = new Query();
+        var C_queryLatPopSum = new Query();
+        var C_queryAvgBroadbandSpeed = new Query();
+        var C_TotPopDef = new StatisticDefinition();
+        var C_LatTotPopDef = new StatisticDefinition();
+        var C_AvgBroadbandSpeedDef = new StatisticDefinition();
+        C_LatTotPopDef.statisticType = "sum";
+        C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
+        C_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop";
+        
+        
+        
+        C_TotPopDef.statisticType = "sum";
+        C_TotPopDef.onStatisticField = 'C_TotPop';
+        C_TotPopDef.outStatisticFieldName = "TotPop";
         queryCount.geometry = app.map.extent;  
         queryCount.where = '1=1';
         queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;
-        queryPopSum.geometry = app.map.extent;  
-        queryPopSum.where = '1=1';
-        queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-        queryPopSum.outStatistics = [TotPopDef];       
+        C_queryPopSum.geometry = app.map.extent;  
+        C_queryPopSum.where = '1=1';
+        C_queryPopSum.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+        C_queryPopSum.outStatistics = [C_TotPopDef];
+        C_queryLatPopSum.geometry = app.map.extent;  
+        C_queryLatPopSum.where = '1=1';
+        C_queryLatPopSum.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+        C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
+        C_queryAvgBroadbandSpeed.geometry = app.map.extent;  
+        C_queryAvgBroadbandSpeed.where = '1=1';
+        C_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+        C_queryAvgBroadbandSpeed.outStatistics = [C_AvgBroadbandSpeedDef];
+        C_AvgBroadbandSpeedDef.statisticType = "avg";
+        C_AvgBroadbandSpeedDef.onStatisticField = "MaxAvgWeig";
+        C_AvgBroadbandSpeedDef.outStatisticFieldName = "CountyAvgBroadbandSpeed";
+        
+        var T_queryPopSum = new Query();
+     var T_queryLatPopSum = new Query();
+     var T_queryAvgBroadbandSpeed = new Query();
+     var T_TotPopDef = new StatisticDefinition();
+     var T_LatTotPopDef = new StatisticDefinition();
+     var T_AvgBroadbandSpeedDef = new StatisticDefinition();
+
+    T_TotPopDef.statisticType = "sum";
+     T_TotPopDef.onStatisticField = 'T_TotPop';
+     T_TotPopDef.outStatisticFieldName = "TotPop";
+     T_LatTotPopDef.statisticType = "sum";
+     T_LatTotPopDef.onStatisticField = 'T_TotLatPo';
+     T_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop";
+     T_queryLatPopSum.geometry = app.map.extent;  
+     T_queryLatPopSum.where = '1=1';
+     T_queryLatPopSum.spatialRelationship = T_queryLatPopSum.SPATIAL_REL_CONTAINS
+     T_queryLatPopSum.outStatistics = [T_LatTotPopDef];
+     T_queryPopSum.geometry = e.extent;  
+     T_queryPopSum.where = '1=1';
+     T_queryPopSum.spatialRelationship = T_queryPopSum.SPATIAL_REL_CONTAINS
+     T_queryPopSum.outStatistics = [T_TotPopDef];
+     
+     T_AvgBroadbandSpeedDef.statisticType = "avg";
+     T_AvgBroadbandSpeedDef.onStatisticField = "MaxAvgWeig";
+     T_AvgBroadbandSpeedDef.outStatisticFieldName = "CountyAvgBroadbandSpeed";
+     T_queryAvgBroadbandSpeed.geometry = app.map.extent;
+     T_queryAvgBroadbandSpeed.where = '1=1';
+     T_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+     T_queryAvgBroadbandSpeed.outStatistics = [T_AvgBroadbandSpeedDef];
         
         function getStats(results){
         var stats = results.features[0].attributes;
-        document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
-        app.TestSwitch.queryFeatures(queryPopSum, getStats);
-                
+        document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop;};
+        
+        function getTotalLatinoPopulation(results2){
+        var stats = results2.features[0].attributes;
+        document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
+        
+        function getAverageBroadbandSpeed(results3){
+        var stats = results3.features[0].attributes;
+        document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);};
 
         
-        if (HispanicPopulationLayer == true && Button1.checked == true){
+        if (HispPopLoadLayerVisible == true && Button1.checked == true){
         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
-        else if (HispanicPopulationLayer == false && Button1.checked == true) {         
+        else if (HispPopLoadLayerVisible == false && Button1.checked == true) {         
         app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch4.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch4.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch4.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch4.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }     
         
-        if (HispanicPopulationPercentLayer == true && Button3.checked == true){
+        if (HispPopPctLayerVisible == true && Button3.checked == true){
         app.TestSwitch3.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch3.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch3.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch3.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch3.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
-        else if (HispanicPopulationPercentLayer == false && Button3.checked == true) {         
+        else if (HispPopPctLayerVisible == false && Button3.checked == true) {         
         app.TestSwitch6.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch6.queryFeatures(queryPopSum, getStats);
-        }    
-        
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong> "  + objectIds.length}));
+        app.TestSwitch6.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch6.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch6.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
+        } 
+       
         if (BroadbandSpeedLayer == true && Button2.checked == true){
         app.TestSwitch2.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch2.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch2.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch2.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch2.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
         else if (BroadbandSpeedLayer == false && Button2.checked == true) {         
         app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch5.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+        app.TestSwitch5.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch5.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch5.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         } 
-        
-        if (PopulationDensityLayer == true && Button4.checked == true){
+       
+        if (PopDensityLayerVisible == true && Button4.checked == true){
         app.TestSwitch8.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-        app.TestSwitch8.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed:</strong>"  + objectIds.length}));
+        app.TestSwitch8.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch8.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch8.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
-        else if (PopulationDensityLayer == false && Button4.checked == true) {         
+        else if (PopDensityLayerVisible == false && Button4.checked == true) {         
         app.TestSwitch7.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds.length}));
-        app.TestSwitch7.queryFeatures(queryPopSum, getStats);
+        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong>"  + objectIds.length}));
+        app.TestSwitch7.queryFeatures(C_queryPopSum, getStats);
+        app.TestSwitch7.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+        app.TestSwitch7.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         } 
+ 
        },
       );
 
@@ -496,6 +652,7 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch5)
      app.map.removeLayer(app.TestSwitch6)
      app.map.removeLayer(app.TestSwitch7)
+     app.map.removeLayer(app.TestSwitch8)
 
      app.map.addLayer(app.TestSwitch);
      app.map.addLayer(app.TestSwitch4);
@@ -599,44 +756,16 @@ var IncomeFilter = {
    
     // Change the Legend and Summary Statistics When Counties/Tracts are Displayed
      app.map.on("extent-change", function(e) {
-     
-     var queryCount = new Query();
-     var queryPopSum = new Query();
-     var TotPopDef = new StatisticDefinition();
-     TotPopDef.statisticType = "sum";
-     TotPopDef.onStatisticField = 'C_TotPop';
-     TotPopDef.outStatisticFieldName = "TotPop";
-     queryPopSum.geometry = e.extent;  
-     queryPopSum.where = '1=1';
-     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-     queryPopSum.outStatistics = [TotPopDef];
-     var currentScale = app.map.getScale();
+
      var CountyLayerVisible = app.TestSwitch2.visibleAtMapScale;
-     function getStats(results){
-     var stats = results.features[0].attributes;
-     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
 
      if  (CountyLayerVisible == true && Button2.checked == true){
      app.legend.layerInfos[0].layer = app.TestSwitch2;
-     app.legend.refresh();
-     queryCount.geometry = e.extent;  
-     queryCount.where = '1=1';
-     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch2.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-     app.TestSwitch2.queryFeatures(queryPopSum, getStats);
-     }
+     app.legend.refresh(); }
      
      else if (CountyLayerVisible == false && Button2.checked == true) {
      app.legend.layerInfos[0].layer = app.TestSwitch5;
-     app.legend.refresh()
-     queryCount.geometry = e.extent;  
-     queryCount.where = '1=1';
-     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
-     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
-     app.TestSwitch5.queryFeatures(queryPopSum, getStats);
-                }))};
+     app.legend.refresh()};
    
      });
      
@@ -718,43 +847,16 @@ var IncomeFilter = {
     // Change the Legend and Summary Statistics When Counties/Tracts are Displayed
      app.map.on("extent-change", function(e) {
      
-     var queryCount = new Query();
-     var queryPopSum = new Query();
-     var TotPopDef = new StatisticDefinition();
-     TotPopDef.statisticType = "sum";
-     TotPopDef.onStatisticField = 'C_TotPop';
-     TotPopDef.outStatisticFieldName = "TotPop";
-     queryPopSum.geometry = e.extent;  
-     queryPopSum.where = '1=1';
-     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-     queryPopSum.outStatistics = [TotPopDef];
-     var currentScale = app.map.getScale();
+
      var CountyLayerVisible = app.TestSwitch3.visibleAtMapScale;
-     function getStats(results){
-     var stats = results.features[0].attributes;
-     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
+     
 
      if  (CountyLayerVisible == true && Button3.checked == true){
      app.legend.layerInfos[0].layer = app.TestSwitch3;
-     app.legend.refresh();
-     queryCount.geometry = e.extent;  
-     queryCount.where = '1=1';
-     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch3.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-     app.TestSwitch3.queryFeatures(queryPopSum, getStats);
-     }
-     
+     app.legend.refresh(); }   
      else if (CountyLayerVisible == false && Button3.checked == true) {
      app.legend.layerInfos[0].layer = app.TestSwitch6;
-     app.legend.refresh()
-     queryCount.geometry = e.extent;  
-     queryCount.where = '1=1';
-     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch6.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
-     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
-     app.TestSwitch6.queryFeatures(queryPopSum, getStats);
-                }))};
+     app.legend.refresh()};
    
      });
      
@@ -800,7 +902,7 @@ var IncomeFilter = {
     
     
     
-//  Population Density Button Speed Button
+     //  Population Density Button Speed Button
      Button4.addEventListener('click', function(e){
 
      // Remove Unwanted Layers
@@ -838,44 +940,16 @@ var IncomeFilter = {
    
     // Change the Legend and Summary Statistics When Counties/Tracts are Displayed
      app.map.on("extent-change", function(e) {
-     
-     var queryCount = new Query();
-     var queryPopSum = new Query();
-     var TotPopDef = new StatisticDefinition();
-     TotPopDef.statisticType = "sum";
-     TotPopDef.onStatisticField = 'C_TotPop';
-     TotPopDef.outStatisticFieldName = "TotPop";
-     queryPopSum.geometry = e.extent;  
-     queryPopSum.where = '1=1';
-     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-     queryPopSum.outStatistics = [TotPopDef];
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch8.visibleAtMapScale;
-     function getStats(results){
-     var stats = results.features[0].attributes;
-     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
-
      if  (CountyLayerVisible == true && Button4.checked == true){
      app.legend.layerInfos[0].layer = app.TestSwitch8;
      app.legend.refresh();
-     queryCount.geometry = e.extent;  
-     queryCount.where = '1=1';
-     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch8.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-     app.TestSwitch8.queryFeatures(queryPopSum, getStats);
      }
-     
      else if (CountyLayerVisible == false && Button4.checked == true) {
      app.legend.layerInfos[0].layer = app.TestSwitch7;
      app.legend.refresh()
-     queryCount.geometry = e.extent;  
-     queryCount.where = '1=1';
-     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
-     app.TestSwitch7.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
-     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
-     app.TestSwitch7.queryFeatures(queryPopSum, getStats);
-                }))};
+    };
    
      });
      
@@ -910,7 +984,6 @@ var IncomeFilter = {
      app.TestSwitch7.redraw();
 
     });
-
 
     
     //Render County Hispanic Population Layer on Page Load
@@ -971,125 +1044,212 @@ var IncomeFilter = {
      
      
 
-     
-     
-     
-     
-     
-    // Get Number of Counties or Tracts After Page Load and on Extent Change Event For TestSwitch
-    // Get Summary Statistics for Counties or Tracts after Page Load and on Change Event For TestSwitch
-     
-    // Create Feature Table
-    myFeatureTable = new FeatureTable({  
-    "featureLayer" : app.TestSwitch,  
-    "outFields":  ["*"],  
-    "map" : app.map,  
-    "gridOptions": {}});
-   
-   // Create Queries for Summary Statistics
-    var queryCount = new Query(); 
-    var queryPopSum = new Query();
-    var C_queryLatPopSum = new Query(); 
-    
-   // Set Statistics Definition for Total Population
-    var TotPopDef = new StatisticDefinition();
-    TotPopDef.statisticType = "sum";
-    TotPopDef.onStatisticField = 'C_TotPop';
-    TotPopDef.outStatisticFieldName = "TotPop"; 
-    
-   // Set Statistics Definition for Total County Latino Population
-    var C_LatTotPopDef = new StatisticDefinition();
-    C_LatTotPopDef.statisticType = "sum";
-    C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
-    C_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop";
-    
-    
-    
-    
-    
-    // Set Query Parameters for Number of Counties or Tracts
-    queryCount.geometry = app.map.extent;  
-    queryCount.where = '1=1';
-    queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
 
-    // Set Query Parameters for Sum of Population
-    queryPopSum.geometry = app.map.extent;  
-    queryPopSum.where = '1=1';
-    queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-    queryPopSum.outStatistics = [TotPopDef];
-    
-    // Set Query Parameters for Sum of County Latino Population
-    C_queryLatPopSum.geometry = app.map.extent;  
-    C_queryLatPopSum.where = '1=1';
-    C_queryLatPopSum.spatialRelationship = C_queryLatPopSum.SPATIAL_REL_CONTAINS
-    C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
-    
-    
 
-   // Execute Statistics Query against TestSwitch and call results into HTML Display
+     
+         // Get Number of Counties or Tracts After Page Load and on Extent Change Event For TestSwitch
+         // Get Summary Statistics for Counties or Tracts after Page Load and on Change Event For TestSwitch
+     
+         // Create Feature Table
+         myFeatureTable = new FeatureTable({  
+         "featureLayer" : app.TestSwitch,  
+         "outFields":  ["*"],  
+         "map" : app.map,  
+         "gridOptions": {}});
+        
+    // Create Queries for Summary Statistics
+     var queryCount = new Query();
+     var C_queryPopSum = new Query();
+     var C_queryLatPopSum = new Query();
+     var C_queryAvgBroadbandSpeed = new Query();
+     var C_TotPopDef = new StatisticDefinition();
+     var C_LatTotPopDef = new StatisticDefinition();
+     var C_AvgBroadbandSpeedDef = new StatisticDefinition();
+     
+     var T_queryPopSum = new Query();
+     var T_queryLatPopSum = new Query();
+     var T_queryAvgBroadbandSpeed = new Query();
+     var T_TotPopDef = new StatisticDefinition();
+     var T_LatTotPopDef = new StatisticDefinition();
+     var T_AvgBroadbandSpeedDef = new StatisticDefinition();
+         
+     C_TotPopDef.statisticType = "sum";
+     C_TotPopDef.onStatisticField = 'C_TotPop';
+     C_TotPopDef.outStatisticFieldName = "TotPop";
+     C_LatTotPopDef.statisticType = "sum";
+     C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
+     C_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop"; 
+     C_AvgBroadbandSpeedDef.statisticType = "avg";
+     C_AvgBroadbandSpeedDef.onStatisticField = "MaxAvgWeig";
+     C_AvgBroadbandSpeedDef.outStatisticFieldName = "CountyAvgBroadbandSpeed";
+     C_queryLatPopSum.geometry = app.map.extent;  
+     C_queryLatPopSum.where = '1=1';
+     C_queryLatPopSum.spatialRelationship = C_queryLatPopSum.SPATIAL_REL_CONTAINS
+     C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
+     C_queryPopSum.geometry = app.map.extent;  
+     C_queryPopSum.where = '1=1';
+     C_queryPopSum.spatialRelationship = C_queryPopSum.SPATIAL_REL_CONTAINS
+     C_queryPopSum.outStatistics = [C_TotPopDef];
+     C_queryAvgBroadbandSpeed.geometry = app.map.extent;  
+     C_queryAvgBroadbandSpeed.where = '1=1';
+     C_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+     C_queryAvgBroadbandSpeed.outStatistics = [C_AvgBroadbandSpeedDef];
 
-    function getTotalPopulation(results){
-    var stats = results.features[0].attributes;
-    document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop};
-    app.TestSwitch.queryFeatures(queryPopSum, getTotalPopulation); 
-    
-    function getTotalLatinoPopulation(results2){
-    var stats = results2.features[0].attributes;
-    document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
-    app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation); 
-    
-  
-  // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
-    app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-    document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length 
+
+     
+        // Execute Statistics Query against TestSwitch and call results into HTML Display
+     
+         function getTotalPopulation(results){
+         var stats = results.features[0].attributes;
+         document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop};
+         app.TestSwitch.queryFeatures(C_queryPopSum, getTotalPopulation); 
+         
+         function getTotalLatinoPopulation(results2){
+         var stats = results2.features[0].attributes;
+         document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
+         app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation); 
+         
+         function getAverageBroadbandSpeed(results3){
+         var stats = results3.features[0].attributes;
+         document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);
+         app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed)};
+         
+       
+       // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
+         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+         document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length 
                 })); 
      
      // Do all of the above for if/else statement for counties and tracts
      // Change Legend for Counties and Tracts
      app.map.on("extent-change", function(e) {
      var queryCount = new Query();
-     var queryPopSum = new Query();
-     var TotPopDef = new StatisticDefinition();
+     var C_queryPopSum = new Query();
+     var C_queryLatPopSum = new Query();
+     var C_queryAvgBroadbandSpeed = new Query();
+     var C_TotPopDef = new StatisticDefinition();
+     var C_LatTotPopDef = new StatisticDefinition();
+     var C_AvgBroadbandSpeedDef = new StatisticDefinition();
+     
+     var T_queryPopSum = new Query();
+     var T_queryLatPopSum = new Query();
+     var T_queryAvgBroadbandSpeed = new Query();
+     var T_TotPopDef = new StatisticDefinition();
+     var T_LatTotPopDef = new StatisticDefinition();
+     var T_AvgBroadbandSpeedDef = new StatisticDefinition();
+   
+     
      var currentScale = app.map.getScale();
-     var CountyLayerVisible = app.TestSwitch.visibleAtMapScale;
+     
+     var HispPopLoadLayerVisible = app.TestSwitch.visibleAtMapScale;
+     var HispPopLayerVisible = app.TestSwitch.visibleAtMapScale;
+     var HispPopPctLayerVisible = app.TestSwitch3.visibleAtMapScale;
+     var BroadbandSpeedLayer = app.TestSwitch2.visibleAtMapScale;
+     var PopDensityLayerVisible = app.TestSwitch8.visibleAtMapScale;
+     
+     
      function getStats(results){
      var stats = results.features[0].attributes;
-     document.getElementById("SummaryText2").innerHTML = "Total Population in Area Displayed: " + stats.TotPop;};
+     document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong> " + stats.TotPop;
+     };
+
+     function getTotalLatinoPopulation(results2){
+     var stats = results2.features[0].attributes;
+     document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop;
+     };
      
-     if  (CountyLayerVisible == true && Button1.checked == true){
-     TotPopDef.statisticType = "sum";
-     TotPopDef.onStatisticField = 'C_TotPop';
-     TotPopDef.outStatisticFieldName = "TotPop";
-     queryPopSum.geometry = e.extent;  
-     queryPopSum.where = '1=1';
-     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-     queryPopSum.outStatistics = [TotPopDef];
+     function getAverageBroadbandSpeed(results3){
+     var stats = results3.features[0].attributes;
+     document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);
+      };
+     
+    
+     
+   if  ((HispPopLoadLayerVisible == true && Button1.checked == true) || 
+          (HispPopLayerVisible == true && Button1.checked == true) || 
+          (HispPopPctLayerVisible == true && Button3.checked == true) ||
+          (BroadbandSpeedLayer == true && Button2.checked == true) ||
+          (PopDensityLayerVisible == true && Button4.checked == true) 
+          ) {
+          
+     C_TotPopDef.statisticType = "sum";
+     C_TotPopDef.onStatisticField = 'C_TotPop';
+     C_TotPopDef.outStatisticFieldName = "TotPop";
+     C_LatTotPopDef.statisticType = "sum";
+     C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
+     C_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop"; 
+     C_AvgBroadbandSpeedDef.statisticType = "avg";
+     C_AvgBroadbandSpeedDef.onStatisticField = "MaxAvgWeig";
+     C_AvgBroadbandSpeedDef.outStatisticFieldName = "CountyAvgBroadbandSpeed";
+     C_queryLatPopSum.geometry = app.map.extent;  
+     C_queryLatPopSum.where = '1=1';
+     C_queryLatPopSum.spatialRelationship = C_queryLatPopSum.SPATIAL_REL_CONTAINS
+     C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
+     C_queryPopSum.geometry = app.map.extent;  
+     C_queryPopSum.where = '1=1';
+     C_queryPopSum.spatialRelationship = C_queryPopSum.SPATIAL_REL_CONTAINS
+     C_queryPopSum.outStatistics = [C_TotPopDef];
+     C_queryAvgBroadbandSpeed.geometry = app.map.extent;  
+     C_queryAvgBroadbandSpeed.where = '1=1';
+     C_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+     C_queryAvgBroadbandSpeed.outStatistics = [C_AvgBroadbandSpeedDef];
+
      app.legend.layerInfos[0].layer = app.TestSwitch;
      app.legend.refresh();
      queryCount.geometry = e.extent;  
      queryCount.where = '1=1';
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS; 
+    
      app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "Counties Displayed: "  + objectIds.length}));
-     app.TestSwitch.queryFeatures(queryPopSum, getStats); 
+     document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + objectIds.length}));
+     app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
+     app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+     app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
      }
-     else if (CountyLayerVisible == false && Button1.checked == true) {
-     console.log('HereIam')
-     TotPopDef.statisticType = "sum";
-     TotPopDef.onStatisticField = 'T_TotPop';
-     TotPopDef.outStatisticFieldName = "TotPop";
-     queryPopSum.geometry = e.extent;  
-     queryPopSum.where = '1=1';
-     queryPopSum.spatialRelationship = queryPopSum.SPATIAL_REL_CONTAINS
-     queryPopSum.outStatistics = [TotPopDef];
+
+else if ((HispPopLoadLayerVisible == false && Button1.checked == true) || 
+          (HispPopLayerVisible == false && Button1.checked == true) || 
+          (HispPopPctLayerVisible == false && Button3.checked == true) ||
+          (BroadbandSpeedLayer == false && Button2.checked == true) ||
+          (PopDensityLayerVisible == false && Button4.checked == true) 
+          ){
+          
+     T_TotPopDef.statisticType = "sum";
+     T_TotPopDef.onStatisticField = 'T_TotPop';
+     T_TotPopDef.outStatisticFieldName = "TotPop";
+     T_LatTotPopDef.statisticType = "sum";
+     T_LatTotPopDef.onStatisticField = 'T_TotLatPo';
+     T_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop";
+     T_queryLatPopSum.geometry = app.map.extent;  
+     T_queryLatPopSum.where = '1=1';
+     T_queryLatPopSum.spatialRelationship = T_queryLatPopSum.SPATIAL_REL_CONTAINS
+     T_queryLatPopSum.outStatistics = [T_LatTotPopDef];
+     T_queryPopSum.geometry = e.extent;  
+     T_queryPopSum.where = '1=1';
+     T_queryPopSum.spatialRelationship = T_queryPopSum.SPATIAL_REL_CONTAINS
+     T_queryPopSum.outStatistics = [T_TotPopDef];
+     
+     T_AvgBroadbandSpeedDef.statisticType = "avg";
+     T_AvgBroadbandSpeedDef.onStatisticField = "MaxAvgWeig";
+     T_AvgBroadbandSpeedDef.outStatisticFieldName = "CountyAvgBroadbandSpeed";
+     T_queryAvgBroadbandSpeed.geometry = app.map.extent;
+     T_queryAvgBroadbandSpeed.where = '1=1';
+     T_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
+     T_queryAvgBroadbandSpeed.outStatistics = [T_AvgBroadbandSpeedDef];
+     
+
+ 
      app.legend.layerInfos[0].layer = app.TestSwitch4;
      app.legend.refresh()
      queryCount.geometry = e.extent;  
      queryCount.where = '1=1';
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
      app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
-     document.getElementById("SummaryText").innerHTML = "Tracts Displayed: "  + objectIds2.length 
-     app.TestSwitch4.queryFeatures(queryPopSum, getStats);
+     document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + objectIds2.length 
+     
+     app.TestSwitch4.queryFeatures(T_queryPopSum, getStats);
+     app.TestSwitch4.queryFeatures(T_queryLatPopSum, getTotalLatinoPopulation);
+     app.TestSwitch4.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
                 }))};
        });
       });
