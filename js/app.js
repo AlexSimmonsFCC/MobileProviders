@@ -99,8 +99,7 @@ require([
   // Create Feature Layers
   
   app.map.on("load", function (e) {
-
-
+  
 
  app.TestSwitch = new FeatureLayer(app.TestSwitch, {
       "id": "TestSwitch",
@@ -1094,11 +1093,14 @@ var IncomeFilter = {
      C_queryAvgBroadbandSpeed.where = '1=1';
      C_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
      C_queryAvgBroadbandSpeed.outStatistics = [C_AvgBroadbandSpeedDef];
+     queryCount.geometry = e.extent;  
+     queryCount.where = '1=1';
+     queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;
 
 
      
-        // Execute Statistics Query against TestSwitch and call results into HTML Display
-     
+         // Execute Statistics Query against TestSwitch and call results into HTML Display
+             
          function getTotalPopulation(results){
          var stats = results.features[0].attributes;
          document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop};
@@ -1112,8 +1114,8 @@ var IncomeFilter = {
          function getAverageBroadbandSpeed(results3){
          var stats = results3.features[0].attributes;
          document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);
-         app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed)};
-         
+         } 
+         app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
        
        // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
          app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
