@@ -16,6 +16,15 @@
     <style>
       html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
       #map{ margin: 0; padding: 0; }
+      
+    #HomeButton {
+      position: fixed;
+      top: 95px;
+      left: 20px;
+      z-index: 50;
+    }
+      
+      
       #feedback {
         border-radius: 10px;
         position: fixed;
@@ -50,113 +59,66 @@
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
-        
       }
       
        #SummaryText {
         border-radius: 10px;
-        position: absolute;
+        position: fixed;
         height: 20px;
         font-family: arial;
         margin: 0px;
         padding: 10px;
         z-index: 40;
-        background: #c0cde0;
+        background: #D3D3D3;
         color: #444;
         width: 195px;
-        left: 500px;
-        top: 330px;
+        left: 460px;
+        top: 72px;
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
         text-align: left;
       }
       
-      #SummaryText2 {
-        border-radius: 10px;
-        position: absolute;
-        height: 20px;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        background: #c0cde0;
-        color: #444;
-        width: 360px;
-        left: 500px;
-        top: 390px;
-        -moz-box-shadow: 0 0 10px #888;
-        -webkit-box-shadow: 0 0 10px #888;
-        box-shadow: 0 0 10px #888;
-        text-align: left;
-      }
-      
-      
-      #SummaryText3 {
-        border-radius: 10px;
-        position: absolute;
-        height: 20px;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        background: #c0cde0;
-        color: #444;
-        width: 400px;
-        left: 500px;
-        top: 450px;
-        -moz-box-shadow: 0 0 10px #888;
-        -webkit-box-shadow: 0 0 10px #888;
-        box-shadow: 0 0 10px #888;
-        text-align: left;
-      }
-      
-      
+
       #SummaryText4 {
         border-radius: 10px;
-        position: absolute;
+        position: fixed;
         height: 20px;
         font-family: arial;
         margin: 0px;
         padding: 10px;
         z-index: 40;
-        background: #c0cde0;
+        background: #D3D3D3;
         color: #444;
-        width: 450px;
-        left: 500px;
-        top: 400px;
+        width: 320px;
+        left: 460px;
+        top: 22px;
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
         text-align: left;
       }
       
-  .PieChart1 {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  #PieChart1 {
+        border-radius: 10px;
+        position: fixed;
+        height: 200px;
+        font-family: arial;
+        margin: 0px;
+        padding: 10px;
+        z-index: 40;
+        color: #444;
+        width: 200px;
+        right: 12px;
+        bottom: 50px;
       }
-      
-      
-      
-      .bottom-left {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-}
 
-.alert {
-  border: 2px solid red;
-  background: white;
-  font-weight: bold;
-  padding: 1em;
-}
-      
      
 
           #Table2 {
         border-radius: 10px;
-        position: absolute;
+        position: fixed;
         height: 220px;
         font-family: arial;
         margin: 0px;
@@ -164,9 +126,9 @@
         z-index: 40;
         background: #D3D3D3;
         color: #444;
-        width: 940px;
+        width: 1200px;
         left: 70px;
-        top: 620px;
+        bottom: 4px;
         -moz-box-shadow: 0px 0px 10px #444;
         -webkit-box-shadow: 0px 0px 10px #444;
         box-shadow: 0px 0px 10px #444;
@@ -180,12 +142,7 @@
        float: right;
        }
 
-      #HomeButton {
-      position: absolute;
-      top: 95px;
-      left: 20px;
-      z-index: 50;
-    }
+   
     
 
       #county { 
@@ -275,20 +232,18 @@
     <div id="legendWrapper"></div>  
     </div>
     
-    
+  <div id="HomeButton"></div>
  <div id="SummaryText"></div>
  <div id="SummaryText4"></div>
- <div class="PieChart1">
- <div id="Table2"></div> 
- <div id="HomeButton"></div>
- 
-<div class="bottom-left alert">
-  Look at me!
-</div>
- 
- 
- <script>
+  <div id="Table2"></div> 
+ <div id="PieChart1">
 
+
+ 
+
+ 
+  <script>
+ 
        function HideandShow1(){
        document.getElementById('GetData').style.visibility="hidden";
        document.getElementById('HideData').style.visibility="visible";
@@ -300,8 +255,8 @@
        document.getElementById('HideData').style.visibility="hidden"; 
        document.getElementById('Table2').style.visibility="hidden";
        };
-</script>   
- 
+ </script>   
+  
  
  
 
