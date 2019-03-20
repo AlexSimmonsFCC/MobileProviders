@@ -11,7 +11,7 @@ require([
   "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect", "esri/tasks/QueryTask","esri/renderers/ClassBreaksRenderer","esri/geometry/scaleUtils",
   "esri/layers/layer", "esri/dijit/Search","esri/dijit/FeatureTable", "esri/geometry/webMercatorUtils",
  "dojo/_base/lang", "esri/tasks/StatisticDefinition","esri/geometry/Extent","esri/dijit/HomeButton",
-  
+  "dijit/TitlePane",
   
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
   "dojo/domReady!"
@@ -26,7 +26,7 @@ require([
   parser, arrayUtils, Color,
   dom, domConstruct, number,
   ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer, Search,
-  FeatureTable, webMercatorUtils, lang, StatisticDefinition,Extent, HomeButton
+  FeatureTable, webMercatorUtils, lang, StatisticDefinition,Extent, HomeButton, TitlePane
 ) {
 
   parser.parse();
@@ -103,6 +103,7 @@ require([
 
  app.TestSwitch = new FeatureLayer(app.TestSwitch, {
       "id": "TestSwitch",
+      mode: FeatureLayer.MODE_ONDEMAND,
       "infoTemplate": app.popupTemplate,
       "outFields": app.outFields,
       "opacity": 0.8,
@@ -182,6 +183,8 @@ require([
      var Button2 = document.getElementById('B2');
      var Button3 = document.getElementById('B3');
      var Button4 = document.getElementById('B4');
+     var ShowDataButton = document.getElementById('GetData');
+     var HideDataButton = document.getElementById('HideData');
      var filterButton = document.getElementById('filterButton');
      var resetButton = document.getElementById('resetButton');
      var HispPopDp = document.getElementById("HispPop");
@@ -1045,16 +1048,15 @@ var IncomeFilter = {
 
 
 
+
      
          // Get Number of Counties or Tracts After Page Load and on Extent Change Event For TestSwitch
          // Get Summary Statistics for Counties or Tracts after Page Load and on Change Event For TestSwitch
      
-         // Create Feature Table
-         myFeatureTable = new FeatureTable({  
-         "featureLayer" : app.TestSwitch,  
-         "outFields":  ["*"],  
-         "map" : app.map,  
-         "gridOptions": {}});
+     
+     
+
+         
         
     // Create Queries for Summary Statistics
      var queryCount = new Query();
@@ -1072,8 +1074,8 @@ var IncomeFilter = {
      var T_LatTotPopDef = new StatisticDefinition();
      var T_AvgBroadbandSpeedDef = new StatisticDefinition();
          
-     C_TotPopDef.statisticType = "sum";
-     C_TotPopDef.onStatisticField = 'C_TotPop';
+     C_TotPopDef.statisticType = "sum"; 
+     C_TotPopDef.onStatisticField = 'C_TotPop - C_TotLatPo';
      C_TotPopDef.outStatisticFieldName = "TotPop";
      C_LatTotPopDef.statisticType = "sum";
      C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
@@ -1084,7 +1086,7 @@ var IncomeFilter = {
      C_queryLatPopSum.geometry = app.map.extent;  
      C_queryLatPopSum.where = '1=1';
      C_queryLatPopSum.spatialRelationship = C_queryLatPopSum.SPATIAL_REL_CONTAINS
-     C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
+     C_queryLatPopSum.outStatistics = [C_TotPopDef, C_LatTotPopDef];
      C_queryPopSum.geometry = app.map.extent;  
      C_queryPopSum.where = '1=1';
      C_queryPopSum.spatialRelationship = C_queryPopSum.SPATIAL_REL_CONTAINS
@@ -1098,18 +1100,105 @@ var IncomeFilter = {
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;
 
 
-     
+         myFeatureTable = new FeatureTable({  
+         featureLayer : app.TestSwitch,  
+         editable: true, 
+         map : app.map, 
+         fieldInfos: [
+         {name: 'C_TotLatPo', alias: 'County Latino Population', editable: 'false'},
+         {name: 'C_TotLat_1', alias: 'County Percent Hispanic', editable: 'false'},
+         {name: 'C_TotPop', alias: 'County Population', editable: 'false'},
+         {name: 'Geography', alias: 'County Name', editable: 'false'},
+         {name: 'IncomeHH', alias: 'Median Household Income', editable: 'false'},
+         {name: 'PopDensity', alias: 'Population Density', editable: 'false'},
+         {name: 'MaxAvgWeig', alias: 'Mean Broadband Speed', editable: 'false'},
+         {name: 'urban_pct', alias: 'County Urban Percet', editable: 'false'},
+         ],
+         showFeatureCount: false,
+         menuFunctions: [
+         {label: 'Export to CSV', callback: customExportCSV}
+         ]}, "Table2");  
+          myFeatureTable.startup();
+
+
+
+
+
+       document.getElementById('HideData').style.visibility="hidden";
+       document.getElementById('Table2').style.visibility="hidden";
+
+
+
+
+         function customExportCSV(evt){
+          var data = myFeatureTable.dataStore.data
+          
+          var csv = convertArrayOfObjectsToCSV({
+             data: data 
+          });
+          
+          if (!csv.match(/^data:text\/csv/i)) {
+              csv = 'data:text/csv;charset=utf-8,' + csv;
+          }
+
+            var encodedUri = encodeURI(csv);
+            var link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download',"Exportdata.csv");
+            link.click();
+        }
+          
+        function convertArrayOfObjectsToCSV(value){
+            var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+            
+            data = Array.from(new Set(value.data)).filter(d => d).map(d => d.attributes) || null;
+            if (!data || !data.length) {
+                return null;
+            }
+            
+            columnDelimiter = value.columnDelimiter || ',';
+            lineDelimiter = value.lineDelimiter || '\n';
+            
+            keys = Object.keys(data[1]);
+            result = '';
+            result += keys.join(columnDelimiter);
+            result += lineDelimiter;
+            
+            data.forEach(function(item) {
+                ctr = 0;
+                keys.forEach(function(key) {
+                    if (ctr > 0) 
+                        result += columnDelimiter;
+                        result += item[key];
+                        ctr++;
+                });
+                result += lineDelimiter;
+            });
+      
+            return result;
+        }  
+
+
+
          // Execute Statistics Query against TestSwitch and call results into HTML Display
              
+         var DataArray = [];
+             
          function getTotalPopulation(results){
-         var stats = results.features[0].attributes;
-         document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop};
-         app.TestSwitch.queryFeatures(C_queryPopSum, getTotalPopulation); 
-         
+         document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + results.TotPop;
+         };
+         app.TestSwitch.queryFeatures(C_queryPopSum).then(function(e){
+         getTotalPopulation(e.features[0].attributes);
+         })
+
+              
          function getTotalLatinoPopulation(results2){
-         var stats = results2.features[0].attributes;
-         document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
-         app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation); 
+         document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + results2.CountyTotLatPop};
+         app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
+         console.log(e.features[0].attributes)
+         getTotalLatinoPopulation(e.features[0].attributes);
+         })
+      
          
          function getAverageBroadbandSpeed(results3){
          var stats = results3.features[0].attributes;
@@ -1118,13 +1207,34 @@ var IncomeFilter = {
          app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
        
        // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
-         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-         document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length 
-                })); 
+         app.TestSwitch.queryIds(queryCount,  function(objectIds) {  
+         document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length;
+         myFeatureTable.filterRecordsByIds(objectIds);
+    /*      myFeatureTable.refresh(); */
+                }); 
+                
+   
+
      
      // Do all of the above for if/else statement for counties and tracts
      // Change Legend for Counties and Tracts
      app.map.on("extent-change", function(e) {
+     
+     
+     var query = new Query();
+     query.geometry = e.extent;  
+     query.where = '1=1';
+     query.spatialRelationship = Query.SPATIAL_REL_CONTAINS;
+     
+     var TableData = [];
+     
+     app.TestSwitch.queryIds(query,  function(objectIds) {
+     myFeatureTable.filterRecordsByIds(objectIds);
+     var SelectedRows = myFeatureTable.getRowDataById(objectIds);
+     TableData.push(SelectedRows);
+     myFeatureTable.refresh();
+     });
+
      var queryCount = new Query();
      var C_queryPopSum = new Query();
      var C_queryLatPopSum = new Query();
@@ -1175,7 +1285,7 @@ var IncomeFilter = {
           ) {
           
      C_TotPopDef.statisticType = "sum";
-     C_TotPopDef.onStatisticField = 'C_TotPop';
+     C_TotPopDef.onStatisticField = 'C_TotPop - C_TotLatPo';
      C_TotPopDef.outStatisticFieldName = "TotPop";
      C_LatTotPopDef.statisticType = "sum";
      C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
@@ -1186,7 +1296,7 @@ var IncomeFilter = {
      C_queryLatPopSum.geometry = app.map.extent;  
      C_queryLatPopSum.where = '1=1';
      C_queryLatPopSum.spatialRelationship = C_queryLatPopSum.SPATIAL_REL_CONTAINS
-     C_queryLatPopSum.outStatistics = [C_LatTotPopDef];
+     C_queryLatPopSum.outStatistics = [C_TotPopDef, C_LatTotPopDef];
      C_queryPopSum.geometry = app.map.extent;  
      C_queryPopSum.where = '1=1';
      C_queryPopSum.spatialRelationship = C_queryPopSum.SPATIAL_REL_CONTAINS
@@ -1204,10 +1314,59 @@ var IncomeFilter = {
     
      app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
      document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + objectIds.length}));
+     
      app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
-     app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
+     
+     app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
+         console.log(e.features[0].attributes.CountyTotLatPop)
+         console.log(e.features[0].attributes.TotPop)
+         getTotalLatinoPopulation;
+         
+         
+
+         
+
+var chart = new CanvasJS.Chart("PieChart1", {
+	animationEnabled: true,
+  backgroundColor: "transparent",
+	title: {
+		text: ""
+	},
+	data: [{
+		type: "pie",
+		startAngle: 240,
+		yValueFormatString: "##0.00\"%\"",
+		dataPoints: [
+			{y: e.features[0].attributes.CountyTotLatPop, label: "Hispanic Population"},
+			{y: e.features[0].attributes.TotPop, label: "Non-Hispanic Population"}
+		]
+	}]
+});
+chart.render();
+
+
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         })
+     
      app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
      }
+     
 
 else if ((HispPopLoadLayerVisible == false && Button1.checked == true) || 
           (HispPopLayerVisible == false && Button1.checked == true) || 
@@ -1252,8 +1411,16 @@ else if ((HispPopLoadLayerVisible == false && Button1.checked == true) ||
      app.TestSwitch4.queryFeatures(T_queryPopSum, getStats);
      app.TestSwitch4.queryFeatures(T_queryLatPopSum, getTotalLatinoPopulation);
      app.TestSwitch4.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
-                }))};
+             }))};
+       
+        
+
+         
+           
+      
+       
        });
+
       });
     });
     
