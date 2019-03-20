@@ -59,14 +59,14 @@ require([
    app.map.addLayer(ref);
 
   // Instantiate Layers
-  app.TestSwitch =  "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
-  app.TestSwitch2 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
-  app.TestSwitch3 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.TestSwitch =  "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/Counties/FeatureServer/0";
+  app.TestSwitch2 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/Counties/FeatureServer/0";
+  app.TestSwitch3 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/Counties/FeatureServer/0";
   app.TestSwitch4 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch5 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch6 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch7 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
-  app.TestSwitch8 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Counties/FeatureServer/0";
+  app.TestSwitch8 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/Counties/FeatureServer/0";
   app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography", "MaxAvgWeig","urban_pct"];
   app.outFields2 = ["C_TotLatPo", "LatPct","IncomeHH","MaxAvgWeig", "tractjoin", "urban_pct"];
 
@@ -1125,7 +1125,7 @@ var IncomeFilter = {
 
 
        document.getElementById('HideData').style.visibility="hidden";
-       document.getElementById('Table2').style.visibility="hidden";
+       document.getElementById('Table2').style.visibility="hidden"; 
 
 
 
@@ -1202,7 +1202,7 @@ var IncomeFilter = {
          
          function getAverageBroadbandSpeed(results3){
          var stats = results3.features[0].attributes;
-         document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);
+         document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2) + " Mbps/s";
          } 
          app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
        
@@ -1272,7 +1272,7 @@ var IncomeFilter = {
      
      function getAverageBroadbandSpeed(results3){
      var stats = results3.features[0].attributes;
-     document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);
+     document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2) + " Mbps/s";
       };
      
     
@@ -1344,23 +1344,6 @@ var chart = new CanvasJS.Chart("PieChart1", {
 });
 chart.render();
 
-
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
          
          })
      
