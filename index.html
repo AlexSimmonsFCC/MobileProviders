@@ -2,11 +2,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-    <title>Hispanic Broadband</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/3.27/dijit/themes/tundra/tundra.css">
-    <link rel="stylesheet" href="https://js.arcgis.com/3.27/esri/css/esri.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+   <title>Hispanic Broadband</title>
+  <link rel="stylesheet" href="//js.arcgis.com/3.27/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="//js.arcgis.com/3.27/esri/css/esri.css">
+ <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+ <script src="//js.arcgis.com/3.27/"></script>
+
+
     
     <style>
       html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
@@ -119,10 +123,46 @@
         color: #444;
         width: 450px;
         left: 500px;
-        top: 550px;
+        top: 400px;
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
+        text-align: left;
+      }
+      
+     #PieChart1 {
+        border-radius: 10px;
+        position: absolute;
+        height: 200px;
+        font-family: arial;
+        margin: 0px;
+        padding: 10px;
+        z-index: 40;
+        color: #444;
+        width: 200px;
+        left: 550px;
+        top: 450px;;
+        text-align: left;
+      }
+      
+     
+
+          #Table2 {
+        border-radius: 10px;
+        position: absolute;
+        height: 210px;
+        font-family: arial;
+        margin: 0px;
+        padding: 10px;
+        z-index: 40;
+        background: #D3D3D3;
+        color: #444;
+        width: 940px;
+        left: 70px;
+        top: 620px;
+        -moz-box-shadow: 0px 0px 10px #444;
+        -webkit-box-shadow: 0px 0px 10px #444;
+        box-shadow: 0px 0px 10px #444;
         text-align: left;
       }
 
@@ -134,6 +174,21 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+      #GetData {
+       position: absolute;
+       float: right;
+       }
+
       #HomeButton {
       position: absolute;
       top: 95px;
@@ -141,31 +196,20 @@
       z-index: 50;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
       #county { 
         padding: 5px 0 0 0;
         font-weight: 700;
-      }
+        }
       #legendWrapper { padding: 0px 0 0 0; }
       #yearWrapper { padding: 20px 0 0 0; }
       #monthWrapper { padding: 20px 0 0 0; }
       #note { font-size: 80%; font-weight: 700; padding: 0 0 10px 0; }
       h3 { margin: 0 0 5px 0; border-bottom: 1px solid #444; }
     </style>
+        
+        
+        
         
         
     <script>
@@ -176,9 +220,8 @@
   };
 </script>    
     
-<script src="https://js.arcgis.com/3.27/"></script>
-    <script src="js/app.js"></script>
     
+
 
         </head>
       
@@ -225,7 +268,10 @@
            <br/>
           <br/>
           <div>
-            <button id="filterButton">Filter</button> &nbsp <button id="resetButton">Reset</button>
+            <button id="filterButton">Filter</button> 
+            &nbsp <button id="resetButton">Reset</button> &nbsp
+            <button id="HideData" onclick = "HideandShow2()">Hide Data</button> &nbsp &nbsp
+            <button id="GetData" onclick ="HideandShow1()">Display Data</button>
           </div>
           <br>
           
@@ -240,11 +286,30 @@
     
     
  <div id="SummaryText"></div>
- <div id="SummaryText2"></div>
- <div id="SummaryText3"></div>
  <div id="SummaryText4"></div>
-
-    
+ <div id="PieChart1" ></div>
+ <div id="Table2"></div> 
  <div id="HomeButton"></div>
+ 
+
+ 
+ 
+ <script>
+
+       function HideandShow1(){
+       document.getElementById('GetData').style.visibility="hidden";
+       document.getElementById('HideData').style.visibility="visible";
+       document.getElementById('Table2').style.visibility="visible";
+       };
+       
+         function HideandShow2(){
+       document.getElementById('GetData').style.visibility="visible";
+       document.getElementById('HideData').style.visibility="hidden"; 
+       document.getElementById('Table2').style.visibility="hidden";
+       };
+</script>   
+ 
+ 
+ 
 
     
