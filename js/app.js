@@ -1321,46 +1321,7 @@ var IncomeFilter = {
          console.log(e.features[0].attributes.CountyTotLatPop)
          console.log(e.features[0].attributes.TotPop)
          getTotalLatinoPopulation;
-         
-         
 
-         
-
-var chart = new CanvasJS.Chart("PieChart1", {
-	animationEnabled: true,
-  backgroundColor: "transparent",
-	title: {
-		text: ""
-	},
-	data: [{
-		type: "pie",
-		startAngle: 240,
-		yValueFormatString: "##0.00\"%\"",
-		dataPoints: [
-			{y: e.features[0].attributes.CountyTotLatPop, label: "Hispanic Population"},
-			{y: e.features[0].attributes.TotPop, label: "Non-Hispanic Population"}
-		]
-	}]
-});
-chart.render();
-
-
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
          
          })
      
