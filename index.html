@@ -17,15 +17,89 @@
       html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
       #map{ margin: 0; padding: 0; }
       
+  .esriLegendRelationshipLabel {
+  font-size: 12px;
+  color: "#3812d1";
+  padding: 0px 0px;
+  font-family: "Arial";
+  border-color: orange;
+}  
+
+.onoffswitch {
+    position: fixed; width: 130px; left: 290px; top: 295px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #212223; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "SHOW DATA";
+    padding-left: 10px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "HIDE DATA";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #222326;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 18px; margin: 6px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 95px;
+    border: 2px solid #212223; border-radius: 20px;
+    transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
     #HomeButton {
       position: fixed;
       top: 95px;
       left: 20px;
       z-index: 50;
     }
-      
-      
-      #feedback {
+    
+
+        #feedback {
         border-radius: 10px;
         position: fixed;
         height: 480;
@@ -41,9 +115,12 @@
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
+        border-color: #212223;
+        border-width: 2px;
+        border-style: solid;
       }
     
-    #feedback2 {
+   #feedback2 {
         border-radius: 10px;
         position: fixed;
         height: 480;
@@ -55,10 +132,13 @@
         color: #444;
         width: 250px;
         left: 70px;
-        top: 350px;
+        top: 355px;
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
+        border-color: #212223;
+        border-width: 2px;
+        border-style: solid;
       }
       
        #SummaryText {
@@ -78,6 +158,9 @@
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
         text-align: left;
+        border-color: #212223;
+        border-width: 2px;
+        border-style: solid;
       }
       
 
@@ -98,6 +181,9 @@
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
         text-align: left;
+        border-color: #212223;
+        border-width: 2px;
+        border-style: solid;
       }
       
   #PieChart1 {
@@ -133,14 +219,11 @@
         -webkit-box-shadow: 0px 0px 10px #444;
         box-shadow: 0px 0px 10px #444;
         text-align: left;
+        border-color: #212223;
+        border-width: 2px;
+        border-style: solid;
       }
 
-
-
-      #GetData {
-       position: absolute;
-       float: right;
-       }
 
    
     
@@ -217,9 +300,17 @@
           <br/>
           <div>
             <button id="filterButton">Filter</button> 
-            &nbsp <button id="resetButton">Reset</button> &nbsp
-            <button id="HideData" onclick = "HideandShow2()">Hide Data</button> &nbsp &nbsp
-            <button id="GetData" onclick ="HideandShow1()">Display Data</button>
+            &nbsp <button id="resetButton">Reset</button>
+<!--        <button id="HideData" onclick = "HideandShow2()">Hide Data</button>
+            <button id="GetData" onclick ="HideandShow1()">Display Data</button> -->
+            
+        <div id ="TableSwitch" class="onoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked onclick = "HideAndShowTable()">
+    <label class="onoffswitch-label" for="myonoffswitch">
+        <span class="onoffswitch-inner"></span>
+        <span class="onoffswitch-switch"></span>
+    </label>
+</div>
           </div>
           <br>
           
@@ -228,7 +319,7 @@
     </div>
     
     
-    <div id="feedback2">
+    <div id="feedback2" class="esriLegendRelationshipLabel">
     <div id="legendWrapper"></div>  
     </div>
     
@@ -243,20 +334,24 @@
 
  
   <script>
- 
-       function HideandShow1(){
-       document.getElementById('GetData').style.visibility="hidden";
-       document.getElementById('HideData').style.visibility="visible";
-       document.getElementById('Table2').style.visibility="visible";
-       };
-       
-         function HideandShow2(){
-       document.getElementById('GetData').style.visibility="visible";
-       document.getElementById('HideData').style.visibility="hidden"; 
-       document.getElementById('Table2').style.visibility="hidden";
-       };
- </script>   
   
+   
+   
+   function HideAndShowTable () {
+  var checkBox = document.getElementById("myonoffswitch"); 
+  if (checkBox.checked == true){
+    document.getElementById("Table2").style.display = "none";
+    console.log(checkBox.checked)
+  } else if (checkBox.checked == false){
+     document.getElementById("Table2").style.display = "block";
+     console.log(checkBox.checked)
+  }
+   }
+   
+   
+   
+   </script>   
+
  
  
 
