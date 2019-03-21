@@ -1358,27 +1358,29 @@ var IncomeFilter = {
          getRuralCount;
          console.log(e.features[0].attributes.RuralCount)
          console.log(e.features[0].attributes.SuburbanCount)
-         CanvasJS.addColorSet("HispanicPopulation",
+         CanvasJS.addColorSet("PopulationDensity",
                 [
-                "#bef7d4",
-                "#409962",
-                "#195b32",
+                "#ffebd6",
+                "#e08465",
+                "#c40a0a",
                 ]);
          var chart2 = new CanvasJS.Chart("PieChart2", {
          animationEnabled: true,
          backgroundColor: "transparent",
-         colorSet: "HispanicPopulation",
+         colorSet: "PopulationDensity",
          title: {
          text: ""
          },
          data: [{
          type: "pie",
+         indexLabel: "{name}",
+         legendText: "",
          startAngle: 240,
          yValueFormatString: "##0.00\"%\"",
          dataPoints: [
-         {y: e.features[0].attributes.RuralCount, label: "Rural Counties"},
-         {y: e.features[0].attributes.SuburbanCount, label: "Suburban Counties"},
-         {y: e.features[0].attributes.UrbanCount, label: "Urban Population"}
+         {y: e.features[0].attributes.RuralCount, name: "Rural Counties"},
+         {y: e.features[0].attributes.SuburbanCount, name: "Suburban Counties"},
+         {y: e.features[0].attributes.UrbanCount, name: "Urban Population"}
          ]}]});
          chart2.render()
          }); 
@@ -1392,8 +1394,8 @@ var IncomeFilter = {
          getTotalLatinoPopulation;
           CanvasJS.addColorSet("HispanicPopulation",
                 [
-                "#dd5252",
-                "#6a61e2"
+                "#425782",
+                "#848587"
                 ]);
          var chart = new CanvasJS.Chart("PieChart1", {
          animationEnabled: true,
@@ -1402,13 +1404,18 @@ var IncomeFilter = {
          title: {
          text: ""
          },
+        legend: {
+			   maxWidth: 350,
+			   itemWidth: 120},
          data: [{
          type: "pie",
+         indexLabel: "{name}",
+         legendText: "",
          startAngle: 240,
          yValueFormatString: "##0.00\"%\"",
          dataPoints: [
-         {y: e.features[0].attributes.CountyTotLatPop, label: "Hispanic Population"},
-         {y: e.features[0].attributes.TotPop, label: "Non-Hispanic Population"}
+         {y: e.features[0].attributes.CountyTotLatPop, name: "Hispanic Population"},
+         {y: e.features[0].attributes.TotPop, name: "Non-Hispanic Population"}
          ]}]});
          chart.render();})
      
