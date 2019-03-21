@@ -32,7 +32,7 @@ require([
   parser.parse();
   app.fields = {
     "C_TotLatPo": "Latino Population",
-    "C_TotLat_1": "Percent Latino Population",
+    "LatPct": "Percent Latino Population",
     "C_TotPop": "County Population",
     "IncomeHH": "Household Income",
     "PopDensity": "Population Density",
@@ -67,7 +67,7 @@ require([
   app.TestSwitch6 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch7 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch8 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/Counties/FeatureServer/0";
-  app.outFields = ["C_TotLatPo", "C_TotLat_1","C_TotPop","IncomeHH","PopDensity", "Geography", "MaxAvgWeig","urban_pct"];
+  app.outFields = ["C_TotLatPo", "LatPct","C_TotPop","IncomeHH","PopDensity", "Geography", "MaxAvgWeig","urban_pct"];
   app.outFields2 = ["C_TotLatPo", "LatPct","IncomeHH","MaxAvgWeig", "tractjoin", "urban_pct"];
 
   app.popupTemplate = new PopupTemplate({
@@ -75,7 +75,7 @@ require([
     fieldInfos: [ 
             { fieldName: "C_TotPop", visible: true, label: "County Population: " },
             { fieldName: "C_TotLatPo", visible: true, label: "County Hispanic Population: " },
-            { fieldName: "C_TotLat_1", visible: true, label: "County Percent Latino (%): " },
+            { fieldName: "LatPct", visible: true, label: "County Percent Latino (%): " },
             { fieldName: "urban_pct", visible: true, label: "Population Density:", format: { places: 2 } },
             { fieldName: "MaxAvgWeig", visible: true, label: "County Broandspeed (Mbp/s): ", format: { places: 2 }}],
     showAttachments: true,
@@ -808,7 +808,7 @@ var IncomeFilter = {
      Button3.addEventListener('click', function(e){
 
      // Remove Unwanted Layers
-     app.outFields = ["LatPct","C_TotLat_1"];
+     app.outFields = ["LatPct","LatPct"];
      app.map.removeLayer(app.TestSwitch2);
      app.map.removeLayer(app.TestSwitch);
      app.map.removeLayer(app.TestSwitch4);
@@ -827,7 +827,7 @@ var IncomeFilter = {
      symbol.setColor(new Color([150, 150, 150, 0.5]));
     
     // Set Break Values and Color Values for Counties 
-     var classDef = new ClassBreaksRenderer(symbol, "C_TotLat_1");
+     var classDef = new ClassBreaksRenderer(symbol, "LatPct");
      classDef.addBreak(0, 3.3, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(240,240,240)")));
      classDef.addBreak(3.4, 7, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(230,217,200)")));
      classDef.addBreak(7.1, 12, new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(232,207,174)")));
@@ -1073,7 +1073,7 @@ var IncomeFilter = {
      var T_LatTotPopDef = new StatisticDefinition();
      var T_AvgBroadbandSpeedDef = new StatisticDefinition();
          
-     C_TotPopDef.statisticType = "sum"; 
+     C_TotPopDef.statisticType = "sum";
      C_TotPopDef.onStatisticField = 'C_TotPop - C_TotLatPo';
      C_TotPopDef.outStatisticFieldName = "TotPop";
      C_LatTotPopDef.statisticType = "sum";
@@ -1105,7 +1105,7 @@ var IncomeFilter = {
          map : app.map, 
          fieldInfos: [
          {name: 'C_TotLatPo', alias: 'County Latino Population', editable: 'false'},
-         {name: 'C_TotLat_1', alias: 'County Percent Hispanic', editable: 'false'},
+         {name: 'LatPct', alias: 'County Percent Hispanic', editable: 'false'},
          {name: 'C_TotPop', alias: 'County Population', editable: 'false'},
          {name: 'Geography', alias: 'County Name', editable: 'false'},
          {name: 'IncomeHH', alias: 'Median Household Income', editable: 'false'},
@@ -1182,20 +1182,30 @@ var IncomeFilter = {
              
          var DataArray = [];
              
-         function getTotalPopulation(results){
-     /*     document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + results.TotPop; */
-         };
+         function getTotalPopulation(results){};
          app.TestSwitch.queryFeatures(C_queryPopSum).then(function(e){
          getTotalPopulation(e.features[0].attributes);
          })
 
               
-         function getTotalLatinoPopulation(results2){
-/*          document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + results2.CountyTotLatPop */};
+         function getTotalLatinoPopulation(results2){};
          app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
-         console.log(e.features[0].attributes)
-         getTotalLatinoPopulation(e.features[0].attributes);
-         })
+         getTotalLatinoPopulation;
+         var chart = new CanvasJS.Chart("PieChart1", {
+         animationEnabled: true,
+         backgroundColor: "transparent",
+         title: {
+         text: ""
+         },
+         data: [{
+         type: "pie",
+         startAngle: 240,
+         yValueFormatString: "##0.00\"%\"",
+         dataPoints: [
+         {y: e.features[0].attributes.CountyTotLatPop, label: "Hispanic Population"},
+         {y: e.features[0].attributes.TotPop, label: "Non-Hispanic Population"}
+         ]}]});
+         chart.render();})
       
          
          function getAverageBroadbandSpeed(results3){
@@ -1204,11 +1214,11 @@ var IncomeFilter = {
          } 
          app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
        
-       // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
+
          app.TestSwitch.queryIds(queryCount,  function(objectIds) {  
          document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length; 
          myFeatureTable.filterRecordsByIds(objectIds);
-    /*      myFeatureTable.refresh(); */
+    /*      myFeatureTable.refresh();  */
                 }); 
                 
    
@@ -1218,6 +1228,7 @@ var IncomeFilter = {
      // Change Legend for Counties and Tracts
      app.map.on("extent-change", function(e) {
      
+
      
      var query = new Query();
      query.geometry = e.extent;  
@@ -1230,16 +1241,20 @@ var IncomeFilter = {
      myFeatureTable.filterRecordsByIds(objectIds);
      var SelectedRows = myFeatureTable.getRowDataById(objectIds);
      TableData.push(SelectedRows);
-     myFeatureTable.refresh();
+ /*     myFeatureTable.refresh(); */
      });
 
      var queryCount = new Query();
      var C_queryPopSum = new Query();
      var C_queryLatPopSum = new Query();
      var C_queryAvgBroadbandSpeed = new Query();
+     var C_queryPopDensity = new Query();
      var C_TotPopDef = new StatisticDefinition();
      var C_LatTotPopDef = new StatisticDefinition();
      var C_AvgBroadbandSpeedDef = new StatisticDefinition();
+     var C_RuralDef = new StatisticDefinition();
+     var C_SuburbanDef = new StatisticDefinition();
+     var C_UrbanDef = new StatisticDefinition();
      
      var T_queryPopSum = new Query();
      var T_queryLatPopSum = new Query();
@@ -1258,15 +1273,11 @@ var IncomeFilter = {
      var PopDensityLayerVisible = app.TestSwitch8.visibleAtMapScale;
      
      
-     function getStats(results){
-     var stats = results.features[0].attributes;
-     document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong> " + stats.TotPop;
-     };
+     function getStats(results){};
 
-     function getTotalLatinoPopulation(results2){
-     var stats = results2.features[0].attributes;
-     document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop;
-     };
+     function getTotalLatinoPopulation(results2){};
+     
+     function getRuralCount(results4) {};
      
      function getAverageBroadbandSpeed(results3){
      var stats = results3.features[0].attributes;
@@ -1285,6 +1296,25 @@ var IncomeFilter = {
      C_TotPopDef.statisticType = "sum";
      C_TotPopDef.onStatisticField = 'C_TotPop - C_TotLatPo';
      C_TotPopDef.outStatisticFieldName = "TotPop";
+     
+     C_RuralDef.statisticType = "sum";
+     C_RuralDef.onStatisticField = 'RUCC_R';
+     C_RuralDef.outStatisticFieldName = "RuralCount";
+     C_SuburbanDef.statisticType = "sum";
+     C_SuburbanDef.onStatisticField = 'RUCC_S';
+     C_SuburbanDef.outStatisticFieldName = "SuburbanCount";
+     C_UrbanDef.statisticType = "sum";
+     C_UrbanDef.onStatisticField = 'RUCC_U';
+     C_UrbanDef.outStatisticFieldName = "UrbanCount";
+     C_queryPopDensity.geometry = app.map.extent;  
+     C_queryPopDensity.where = '1=1';
+     C_queryPopDensity.spatialRelationship = C_queryLatPopSum.SPATIAL_REL_CONTAINS
+     C_queryPopDensity.outStatistics = [C_RuralDef, C_SuburbanDef, C_UrbanDef];
+
+     
+     
+     
+     
      C_LatTotPopDef.statisticType = "sum";
      C_LatTotPopDef.onStatisticField = 'C_TotLatPo';
      C_LatTotPopDef.outStatisticFieldName = "CountyTotLatPop"; 
@@ -1310,42 +1340,87 @@ var IncomeFilter = {
      queryCount.where = '1=1';
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS; 
     
-     app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + objectIds.length}));
-     
-     app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
+/*     function () {CanvasJS.addColorSet("HispanicPopulation",
+                [
+                "#ffff80",
+                "#9e4410"
+                ]); */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+         app.TestSwitch.queryFeatures(C_queryPopDensity).then(function(e){
+         getRuralCount;
+         console.log(e.features[0].attributes.RuralCount)
+         console.log(e.features[0].attributes.SuburbanCount)
+         CanvasJS.addColorSet("HispanicPopulation",
+                [
+                "#bef7d4",
+                "#409962",
+                "#195b32",
+                ]);
+         var chart2 = new CanvasJS.Chart("PieChart2", {
+         animationEnabled: true,
+         backgroundColor: "transparent",
+         colorSet: "HispanicPopulation",
+         title: {
+         text: ""
+         },
+         data: [{
+         type: "pie",
+         startAngle: 240,
+         yValueFormatString: "##0.00\"%\"",
+         dataPoints: [
+         {y: e.features[0].attributes.RuralCount, label: "Rural Counties"},
+         {y: e.features[0].attributes.SuburbanCount, label: "Suburban Counties"},
+         {y: e.features[0].attributes.UrbanCount, label: "Urban Population"}
+         ]}]});
+         chart2.render()
+         }); 
+         
+    
+
      
      app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
          console.log(e.features[0].attributes.CountyTotLatPop)
          console.log(e.features[0].attributes.TotPop)
          getTotalLatinoPopulation;
-         
-         
-
-         
-
-var chart = new CanvasJS.Chart("PieChart1", {
-	animationEnabled: true,
-  backgroundColor: "transparent",
-	title: {
-		text: ""
-	},
-	data: [{
-		type: "pie",
-		startAngle: 240,
-		yValueFormatString: "##0.00\"%\"",
-		dataPoints: [
-			{y: e.features[0].attributes.CountyTotLatPop, label: "Hispanic Population"},
-			{y: e.features[0].attributes.TotPop, label: "Non-Hispanic Population"}
-		]
-	}]
-});
-chart.render();
-
-         
-         })
+          CanvasJS.addColorSet("HispanicPopulation",
+                [
+                "#dd5252",
+                "#6a61e2"
+                ]);
+         var chart = new CanvasJS.Chart("PieChart1", {
+         animationEnabled: true,
+         backgroundColor: "transparent",
+         colorSet: "HispanicPopulation",
+         title: {
+         text: ""
+         },
+         data: [{
+         type: "pie",
+         startAngle: 240,
+         yValueFormatString: "##0.00\"%\"",
+         dataPoints: [
+         {y: e.features[0].attributes.CountyTotLatPop, label: "Hispanic Population"},
+         {y: e.features[0].attributes.TotPop, label: "Non-Hispanic Population"}
+         ]}]});
+         chart.render();})
+     
+     
      
      app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
+     
+     app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
+     document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + objectIds.length}));
+     
+     app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
+
      }
      
 
