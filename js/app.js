@@ -183,8 +183,7 @@ require([
      var Button2 = document.getElementById('B2');
      var Button3 = document.getElementById('B3');
      var Button4 = document.getElementById('B4');
-     var ShowDataButton = document.getElementById('GetData');
-     var HideDataButton = document.getElementById('HideData');
+     var TableSwitch = document.getElementById('TableSwitch');
      var filterButton = document.getElementById('filterButton');
      var resetButton = document.getElementById('resetButton');
      var HispPopDp = document.getElementById("HispPop");
@@ -1122,10 +1121,9 @@ var IncomeFilter = {
 
 
 
+    document.getElementById("Table2").style.display = "none"; 
+      
 
-
-       document.getElementById('HideData').style.visibility="hidden";
-       document.getElementById('Table2').style.visibility="hidden"; 
 
 
 
@@ -1185,7 +1183,7 @@ var IncomeFilter = {
          var DataArray = [];
              
          function getTotalPopulation(results){
-         document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + results.TotPop;
+     /*     document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + results.TotPop; */
          };
          app.TestSwitch.queryFeatures(C_queryPopSum).then(function(e){
          getTotalPopulation(e.features[0].attributes);
@@ -1193,7 +1191,7 @@ var IncomeFilter = {
 
               
          function getTotalLatinoPopulation(results2){
-         document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + results2.CountyTotLatPop};
+/*          document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + results2.CountyTotLatPop */};
          app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
          console.log(e.features[0].attributes)
          getTotalLatinoPopulation(e.features[0].attributes);
@@ -1208,7 +1206,7 @@ var IncomeFilter = {
        
        // Execute Query Against TestSwitch to get Number of Counties Displayed and return results to HTML region
          app.TestSwitch.queryIds(queryCount,  function(objectIds) {  
-         document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length;
+         document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length; 
          myFeatureTable.filterRecordsByIds(objectIds);
     /*      myFeatureTable.refresh(); */
                 }); 
