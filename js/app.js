@@ -208,12 +208,11 @@ require([
    //Add Options to Dropdown Select List 
    var HispanicPopulationFilter = {
     '>= 0' : 'Any',
-    '< 2000' : '< 2000',
-    '> 2000 AND "C_TotLatPo" < 11000' : '2,001 - 11,000',
-    '> 11001 AND "C_TotLatPo" < 23000'  : '11,001 - 23,000',
-    '> 23001 AND "C_TotLatPo" < 65000'  : '23,001 - 65,000',
-    '> 65001 AND "C_TotLatPo" < 500000'  : '65,001 - 500,000',
-    '> 500000 AND "C_TotLatPo" < 5000000'  : '500,000 - 5,000,000',
+    '> 0 AND "C_TotLatPo" < 1000' : '0 - 1000',
+    '> 1001 AND "C_TotLatPo" < 10000'  : '1001 - 10,000',
+    '> 10001 AND "C_TotLatPo" < 50001'  : '10,001 - 50,000',
+    '> 50001 AND "C_TotLatPo" < 250000'  : '50,001 - 250,000',
+    '> "C_TotLatPo" < 250000'  : '> 250,000',
 }
 
   var HispanicPopulationFilterTract = {
@@ -249,16 +248,11 @@ var PopDensityFilter = {
 
 var IncomeFilter = {
     '>= 0' : 'Any',
-    '> 0 AND "LatPct" < 3.3' : '0% - 3.3%',
-    '> 3.4 AND "LatPct" < 7' : '3.4% - 7%',
-    '> 7.1 AND "LatPct" < 12'  : '7.1% - 12%',
-    '> 12.1 AND "LatPct" < 20'  : '12.1% - 20%',
-    '> 20.1 AND "LatPct" < 24'  : '20.1% - 24%',
-    '> 24.1 AND "LatPct" < 32'  : '24.1% - 32%',
-    '> 32.1 AND "LatPct" < 45'  : '32.1% - 45%',
-    '> 45.1 AND "LatPct" < 55'  : '45.1% - 55%',
-    '> 55.1 AND "LatPct" < 70'  : '55.1% - 70%',
-    '> 70.1 AND "LatPct" < 100'  : '70.1% - 100%',
+    '> 0 AND "LatPct" < 25' : '0% - 25%',
+    '> 26 AND "LatPct" < 50' : '25% - 50%',
+    '> 27 AND "LatPct" < 75'  : '27% - 75%',
+    '> 76 AND "LatPct" < 100'  : '76% - 100%',
+
 }
 
 
@@ -1376,7 +1370,7 @@ var IncomeFilter = {
          indexLabel: "{name}",
          legendText: "",
          startAngle: 240,
-         yValueFormatString: "##0.00\"%\"",
+         yValueFormatString: "##0\"\"",
          dataPoints: [
          {y: e.features[0].attributes.RuralCount, name: "Rural Counties"},
          {y: e.features[0].attributes.SuburbanCount, name: "Suburban Counties"},
@@ -1412,7 +1406,7 @@ var IncomeFilter = {
          indexLabel: "{name}",
          legendText: "",
          startAngle: 240,
-         yValueFormatString: "##0.00\"%\"",
+         yValueFormatString: "##0\"\"",
          dataPoints: [
          {y: e.features[0].attributes.CountyTotLatPop, name: "Hispanic Population"},
          {y: e.features[0].attributes.TotPop, name: "Non-Hispanic Population"}
