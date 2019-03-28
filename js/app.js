@@ -1185,21 +1185,7 @@ var IncomeFilter = {
          function getTotalLatinoPopulation(results2){};
          app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
          getTotalLatinoPopulation;
-         var chart = new CanvasJS.Chart("PieChart1", {
-         animationEnabled: true,
-         backgroundColor: "transparent",
-         title: {
-         text: ""
-         },
-         data: [{
-         type: "pie",
-         startAngle: 240,
-         yValueFormatString: "##0.00\"%\"",
-         dataPoints: [
-         {y: e.features[0].attributes.CountyTotLatPop, label: "Hispanic Population"},
-         {y: e.features[0].attributes.TotPop, label: "Non-Hispanic Population"}
-         ]}]});
-         chart.render();})
+ })
       
          
          function getAverageBroadbandSpeed(results3){
@@ -1210,7 +1196,7 @@ var IncomeFilter = {
        
 
          app.TestSwitch.queryIds(queryCount,  function(objectIds) {  
-         document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length; 
+         document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>" + objectIds.length; 
          myFeatureTable.filterRecordsByIds(objectIds);
     /*      myFeatureTable.refresh();  */
                 }); 
@@ -1273,12 +1259,16 @@ var IncomeFilter = {
      
      function getRuralCount(results4) {};
      
+
+     
+     
      function getAverageBroadbandSpeed(results3){
      var stats = results3.features[0].attributes;
-     document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2) + " Mbps/s";
+     document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed: </strong>" +  "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + stats.CountyAvgBroadbandSpeed.toFixed(2) + " Mbp/s" + "</span>";
+     return stats.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       };
      
-    
+   /*  "<span style='font-weight:bold; font-size:100%; color:red'>" + stats.CountyAvgBroadbandSpeed.toFixed(2) +  " %</span> of the votes separate the two candidates"; */
      
    if  ((HispPopLoadLayerVisible == true && Button1.checked == true) || 
           (HispPopLayerVisible == true && Button1.checked == true) || 
@@ -1333,20 +1323,7 @@ var IncomeFilter = {
      queryCount.geometry = e.extent;  
      queryCount.where = '1=1';
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS; 
-    
-/*     function () {CanvasJS.addColorSet("HispanicPopulation",
-                [
-                "#ffff80",
-                "#9e4410"
-                ]); */
-    
-    
-    
-    
-    
-    
-    
-    
+
     
          app.TestSwitch.queryFeatures(C_queryPopDensity).then(function(e){
          getRuralCount;
@@ -1378,6 +1355,9 @@ var IncomeFilter = {
          ]}]});
          chart2.render()
          }); 
+    
+    
+    
          
     
 
@@ -1418,11 +1398,13 @@ var IncomeFilter = {
      app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
      
      app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-     document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + objectIds.length}));
+     document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds.length).toLocaleString('en')  + "</span>" }));
+     
+     
      
      app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
 
-     }
+    }
      
 
 else if ((HispPopLoadLayerVisible == false && Button1.checked == true) || 
