@@ -231,10 +231,10 @@ require([
 
    var BroadbandSpeedFilter = {
     '>= 0' : 'Any',
-    '> 0 AND "MaxAvgWeig" < 100' : 'Limited Access',
-    '> 101 AND "MaxAvgWeig" < 250' : 'Typical Household',
-    '> 251 AND "MaxAvgWeig" < 400'  : 'Specialized Uses',
-    '> 401 AND "MaxAvgWeig" < 1000'  : 'Business Broadband',
+    '> 0 AND "MaxAvgWeig" < 100' : 'Limited Access (0-100 Mbps/s)',
+    '> 101 AND "MaxAvgWeig" < 250' : 'Typical Household (101-250 Mbps/s)',
+    '> 251 AND "MaxAvgWeig" < 400'  : 'Specialized Uses (251-400 Mbps/s) ',
+    '> 401 AND "MaxAvgWeig" < 1000'  : 'Business Broadband (401-1000 Mbps/s)',
 
 }
 
@@ -250,7 +250,7 @@ var IncomeFilter = {
     '>= 0' : 'Any',
     '> 0 AND "LatPct" < 25' : '0% - 25%',
     '> 26 AND "LatPct" < 50' : '25% - 50%',
-    '> 27 AND "LatPct" < 75'  : '27% - 75%',
+    '> 27 AND "LatPct" < 75'  : '51% - 75%',
     '> 76 AND "LatPct" < 100'  : '76% - 100%',
 
 }
