@@ -231,10 +231,10 @@ require([
 
    var BroadbandSpeedFilter = {
     '>= 0' : 'Any',
-    '> 0 AND "MaxAvgWeig" < 100' : 'Limited Access (0-100 Mbps/s)',
-    '> 101 AND "MaxAvgWeig" < 250' : 'Typical Household (101-250 Mbps/s)',
-    '> 251 AND "MaxAvgWeig" < 400'  : 'Specialized Uses (251-400 Mbps/s) ',
-    '> 401 AND "MaxAvgWeig" < 1000'  : 'Business Broadband (401-1000 Mbps/s)',
+    '> 0 AND "MaxAvgWeig" < 100' : 'Limited Access (0-100)',
+    '> 101 AND "MaxAvgWeig" < 250' : 'Typical Household (101-250)',
+    '> 251 AND "MaxAvgWeig" < 400'  : 'Specialized Uses (251-400) ',
+    '> 401 AND "MaxAvgWeig" < 1000'  : 'Business Broadband (401-1000)',
 
 }
 
