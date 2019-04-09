@@ -659,7 +659,7 @@ var IncomeFilter = {
  
      var classDef = new ClassBreaksRenderer(symbol, "C_TotLatPo");
      classDef.addBreak({minValue: 0, maxValue: 2000, label: "0 - 2,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)"))});
-     classDef.addBreak({minValue: 2001, maxValue: 11000, label: "2,000 - 2,001", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
+     classDef.addBreak({minValue: 2001, maxValue: 11000, label: "2,001 - 11,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
      classDef.addBreak({minValue: 11001, maxValue: 23000, label: "11,001 - 23,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)"))});
      classDef.addBreak({minValue: 23001, maxValue: 65000, label: "23,001 - 65,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)"))});
      classDef.addBreak({minValue: 65001, maxValue: 500000, label: "65,001 - 500,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)"))});
@@ -988,7 +988,7 @@ var IncomeFilter = {
          
      var classDef = new ClassBreaksRenderer(symbol, "C_TotLatPo");
      classDef.addBreak({minValue: 0, maxValue: 2000, label: "0 - 2,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,255,128)"))});
-     classDef.addBreak({minValue: 2001, maxValue: 11000, label: "2,000 - 2,001", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
+     classDef.addBreak({minValue: 2001, maxValue: 11000, label: "2,001 - 11,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(252,221,93)"))});
      classDef.addBreak({minValue: 11001, maxValue: 23000, label: "11,001 - 23,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(247,186,62)"))});
      classDef.addBreak({minValue: 23001, maxValue: 65000, label: "23,001 - 65,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(214,133,34)"))});
      classDef.addBreak({minValue: 65001, maxValue: 500000, label: "65,001 - 500,000", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(158,68,16)"))});
