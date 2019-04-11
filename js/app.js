@@ -1,3 +1,4 @@
+
 var app = {};
 require([
   "esri/map", "esri/tasks/query",
@@ -11,7 +12,7 @@ require([
   "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect", "esri/tasks/QueryTask","esri/renderers/ClassBreaksRenderer","esri/geometry/scaleUtils",
   "esri/layers/layer", "esri/dijit/Search","esri/dijit/FeatureTable", "esri/geometry/webMercatorUtils",
  "dojo/_base/lang", "esri/tasks/StatisticDefinition","esri/geometry/Extent","esri/dijit/HomeButton",
-  "dijit/TitlePane",
+  "dijit/TitlePane","esri/renderers/UniqueValueRenderer",
   
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
   "dojo/domReady!"
@@ -26,7 +27,7 @@ require([
   parser, arrayUtils, Color,
   dom, domConstruct, number,
   ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer, Search,
-  FeatureTable, webMercatorUtils, lang, StatisticDefinition,Extent, HomeButton, TitlePane
+  FeatureTable, webMercatorUtils, lang, StatisticDefinition,Extent, HomeButton, TitlePane, UniqueValueRenderer
 ) {
 
   parser.parse();
@@ -241,9 +242,9 @@ require([
 
 var PopDensityFilter = {
     '>= 0' : 'Any',
-    ' = 0' : 'Rural',
-    '> 0 AND "urban_pct" < .4' : 'Suburban',
-    ' > .8' : 'Urban',
+    'Rural': 'Rural',
+    'Suburban' : 'Suburban',
+    'Urban': 'Urban'
 }
 
 var IncomeFilter = {
@@ -284,17 +285,17 @@ var IncomeFilter = {
 
 
     function setDefinitionExp(HispPopValue, BroadbandSpeedValue, IncomeValue, PopDensityValue) {
-      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch8.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch8.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
       
-      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
-      app.TestSwitch7.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "urban_pct" + " " + PopDensityValue);
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
+      app.TestSwitch7.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
     }
     
     
@@ -901,7 +902,7 @@ var IncomeFilter = {
      Button4.addEventListener('click', function(e){
 
      // Remove Unwanted Layers
-     app.outFields = ["urban_pct"];
+     app.outFields = ["RUCC"];
      app.map.removeLayer(app.TestSwitch2);
      app.map.removeLayer(app.TestSwitch);
      app.map.removeLayer(app.TestSwitch4);
@@ -910,8 +911,10 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch6);
 
     // Add Desired Layers and Refresh Them
+    console.log('Button4 Has been Clicked');
      app.map.addLayer(app.TestSwitch7);
      app.map.addLayer(app.TestSwitch8);
+     console.log('Button4 Has been Clicked');
      app.legend.refresh();
      app.TestSwitch7.refresh();
      app.TestSwitch8.refresh();
@@ -921,10 +924,10 @@ var IncomeFilter = {
      symbol.setColor(new Color([150, 150, 150, 0.5]));
     
     // Set Break Values and Color Values for Counties 
-     var classDef = new ClassBreaksRenderer(symbol, "urban_pct");
-     classDef.addBreak({minValue: 0, maxValue: .4, label: "Rural", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)"))});
-     classDef.addBreak({minValue: .41, maxValue: .8, label: "Suburban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)"))});
-     classDef.addBreak({minValue: .81, maxValue: 1, label: "Urban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)"))});
+     var classDef = new UniqueValueRenderer(symbol, "RUCC");
+     classDef.addValue("Rural", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)")));
+     classDef.addValue("Suburban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)")));
+     classDef.addValue("Urban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)")));
      classDef.defaultLabel = null;
      classDef.defaultSymbol = null;
 
@@ -963,10 +966,10 @@ var IncomeFilter = {
      symbol2.setColor(new Color([150, 150, 150, 0.5]));
 
    // Set Break Values and Color Values for Tracts 
-     var classDef2 = new ClassBreaksRenderer(symbol, "urban_pct");
-     classDef2.addBreak({minValue: 0, maxValue: .4, label: "Rural", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)"))});
-     classDef2.addBreak({minValue: .41, maxValue: .8, label: "Suburban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)"))});
-     classDef2.addBreak({minValue: .81, maxValue: 1, label: "Urban", symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)"))});
+     var classDef2 = new UniqueValueRenderer(symbol, "RUCA");
+     classDef2.addValue("Rural", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)")));
+     classDef2.addValue("Suburban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)")));
+     classDef2.addValue("Urban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)")));;
      classDef2.defaultLabel = null;
      classDef2.defaultSymbol = null;
 
@@ -1462,5 +1465,3 @@ else if ((HispPopLoadLayerVisible == false && Button1.checked == true) ||
 
       });
     });
-    
-    
