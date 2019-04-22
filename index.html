@@ -4,7 +4,7 @@
   <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-   <title>Hispanic Broadband</title>
+   <title>Advertised Broadband Speeds and Latino Demography Viewer</title>
   <link rel="stylesheet" href="//js.arcgis.com/3.27/dijit/themes/claro/claro.css">
   <link rel="stylesheet" href="//js.arcgis.com/3.27/esri/css/esri.css">
  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -253,6 +253,15 @@
        position: fixed;
        left: 330px;
      }
+     
+     
+     #search {
+         display: block;
+         position: fixed;
+         z-index: 2;
+         top: 22px;
+         left: 1200px;
+      }
    
    
 
@@ -294,7 +303,7 @@
            data-dojo-props="region:'center'">
 
         <div id="feedback">
-          <h3>Hispanic Broadband</h3>
+          <h3>Broadband Speed and Latino Demography</h3>
           <div id="info">
       <input type="radio" id="B1" name="Button" value="B1" checked> <label for="B1">Hispanic Population</label>
       <br><input type="radio" id="B3" name="Button" value="B3"> <label for="B3">Hispanic Population Percent</label>
@@ -355,9 +364,9 @@
  <div id="SummaryText"></div>
  <div id="SummaryText4"></div>
   <div id="Table2"></div> 
-<!--    <div id="feedback3"></div> -->
  <div id="PieChart1"></div>
  <div id="PieChart2"></div>
+ <div id="search"></div>
 
  
 
@@ -369,16 +378,16 @@
   
    
    
-   function HideAndShowTable () {
-  var checkBox = document.getElementById("myonoffswitch"); 
-  if (checkBox.checked == true){
+    function HideAndShowTable () {
+     var checkBox = document.getElementById("myonoffswitch"); 
+     if (checkBox.checked == true){
     document.getElementById("Table2").style.display = "none";
     console.log(checkBox.checked)
-  } else if (checkBox.checked == false){
+     } else if (checkBox.checked == false){
      document.getElementById("Table2").style.display = "block";
      console.log(checkBox.checked)
-  }
-   }
+     }
+   } 
    
    
    
