@@ -12,7 +12,7 @@ require([
   "dojo/data/ItemFileReadStore", "dijit/form/FilteringSelect", "esri/tasks/QueryTask","esri/renderers/ClassBreaksRenderer","esri/geometry/scaleUtils",
   "esri/layers/layer", "esri/dijit/Search","esri/dijit/FeatureTable", "esri/geometry/webMercatorUtils",
  "dojo/_base/lang", "esri/tasks/StatisticDefinition","esri/geometry/Extent","esri/dijit/HomeButton",
-  "dijit/TitlePane","esri/renderers/UniqueValueRenderer",
+  "dijit/TitlePane","esri/renderers/UniqueValueRenderer","esri/dijit/Search",
   
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
   "dojo/domReady!"
@@ -27,7 +27,7 @@ require([
   parser, arrayUtils, Color,
   dom, domConstruct, number,
   ItemFileReadStore, FilteringSelect, QueryTask, ClassBreaksRenderer, scaleUtils, layer, Search,
-  FeatureTable, webMercatorUtils, lang, StatisticDefinition,Extent, HomeButton, TitlePane, UniqueValueRenderer
+  FeatureTable, webMercatorUtils, lang, StatisticDefinition,Extent, HomeButton, TitlePane, UniqueValueRenderer, Search
 ) {
 
   parser.parse();
@@ -53,6 +53,13 @@ require([
   home.startup();
   
   
+           var search = new Search({
+            map: app.map
+         }, "search");
+         search.startup();
+
+  
+  
   // Instantiate Basemaps
    var basemap = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer");
    app.map.addLayer(basemap);
@@ -69,14 +76,14 @@ require([
   app.TestSwitch7 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/2016_Tracts/FeatureServer/0";
   app.TestSwitch8 = "https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/Counties/FeatureServer/0";
   app.outFields = ["C_TotLatPo", "LatPct","C_TotPop","IncomeHH","PopDensity", "Geography", "MaxAvgWeig","urban_pct"];
-  app.outFields2 = ["C_TotLatPo", "LatPct","IncomeHH","MaxAvgWeig", "tractjoin", "urban_pct"];
+  app.outFields2 = ["C_TotLatPo", "LatPct","IncomeHH","MaxAvgWeig", "tractjoin", "urban_pct", "CNTYNAME", "tracta"];
 
   app.popupTemplate = new PopupTemplate({
     title: "{Geography}",
     fieldInfos: [ 
             { fieldName: "C_TotPop", visible: true, label: "County Population: " },
             { fieldName: "C_TotLatPo", visible: true, label: "County Hispanic Population: " },
-            { fieldName: "LatPct", visible: true, label: "County Percent Latino (%): " },
+            { fieldName: "LatPct", visible: true, label: "County Percent Latino (%): ", format: { places: 2 } },
             { fieldName: "urban_pct", visible: true, label: "Population Density:", format: { places: 2 } },
             { fieldName: "MaxAvgWeig", visible: true, label: "County Broandspeed (Mbp/s): ", format: { places: 2 }}],
     showAttachments: true,
@@ -85,11 +92,11 @@ require([
   
 
    app.popupTemplate2 = new PopupTemplate({
-    title: "{Geography}",
+    title: "Tract {tracta} in {CNTYNAME}",
     fieldInfos: [ 
-            { fieldName: "tractjoin", visible: true, label: "Tract ID: " },
+            { fieldName: "tractjoin", visible: true, label: "Full Tract ID: " },
             { fieldName: "C_TotLatPo", visible: true, label: "Tract Latino Population: " },
-            { fieldName: "LatPct", visible: true, label: "Tract Percent Latino (%): " },
+            { fieldName: "LatPct", visible: true, label: "Tract Percent Latino (%): ", format: { places: 2 } },
             { fieldName: "urban_pct", visible: true, label: "Tract Population Density", format: { places: 2 }  },
             { fieldName: "MaxAvgWeig", visible: true, label: "Tract Broandspeed (Mbp/s): " }],
   showAttachments: true,
@@ -213,7 +220,7 @@ require([
     '> 1001 AND "C_TotLatPo" < 10000'  : '1001 - 10,000',
     '> 10001 AND "C_TotLatPo" < 50001'  : '10,001 - 50,000',
     '> 50001 AND "C_TotLatPo" < 250000'  : '50,001 - 250,000',
-    '> "C_TotLatPo" < 250000'  : '> 250,000',
+    '> 250000'  : '> 250,000',
 }
 
   var HispanicPopulationFilterTract = {
@@ -241,10 +248,10 @@ require([
 
 
 var PopDensityFilter = {
-    '>= 0' : 'Any',
-    'Rural': 'Rural',
-    'Suburban' : 'Suburban',
-    'Urban': 'Urban'
+    ' >= 0' : 'Any',
+    ' = 3': 'Rural',
+    ' = 2' : 'Suburban',
+    ' = 1': 'Urban'
 }
 
 var IncomeFilter = {
@@ -285,17 +292,17 @@ var IncomeFilter = {
 
 
     function setDefinitionExp(HispPopValue, BroadbandSpeedValue, IncomeValue, PopDensityValue) {
-      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch8.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC2" + PopDensityValue);
+      app.TestSwitch.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC2" + PopDensityValue);
+      app.TestSwitch2.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC2" + PopDensityValue);
+      app.TestSwitch3.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC2" + PopDensityValue);
+      app.TestSwitch8.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC2" + PopDensityValue);
       
-      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCC =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
-      app.TestSwitch7.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA =" + " " + "'"+PopDensityValue+"'");
+      console.log("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA  "+PopDensityValue)
+      app.TestSwitch4.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA  "+PopDensityValue);
+      app.TestSwitch5.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA  "+PopDensityValue);
+      app.TestSwitch6.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA  "+PopDensityValue);
+      app.TestSwitch7.setDefinitionExpression("C_TotLatPo" + " " + HispPopValue + " " + "AND" + " " +  "MaxAvgWeig" + " " + BroadbandSpeedValue + " " + "AND" + " " + "LatPct" + " " + IncomeValue + " " + "AND" + " " + "RUCA  "+PopDensityValue);
     }
     
     
@@ -385,29 +392,24 @@ var IncomeFilter = {
         
         
         
-        function getStats(results){
-        var stats = results.features[0].attributes;
-        document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop;};
-        
-        function getTotalLatinoPopulation(results2){
-        var stats = results2.features[0].attributes;
-        document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
+
         
         function getAverageBroadbandSpeed(results3){
         var stats = results3.features[0].attributes;
-        document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);};
+        document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed: </strong>" +  "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + stats.CountyAvgBroadbandSpeed.toFixed(2) + " Mbp/s" + "</span>";
+};
 
         
         if (HispPopLoadLayerVisible == true && Button1.checked == true){
         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+     document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds.length).toLocaleString('en')  + "</span>" }));
         app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch.queryFeatures(C_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
         else if (HispPopLoadLayerVisible == false && Button1.checked == true) {         
         app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+       document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch4.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch4.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch4.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -415,14 +417,14 @@ var IncomeFilter = {
         
         if (HispPopPctLayerVisible == true && Button3.checked == true){
         app.TestSwitch3.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+             document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds.length).toLocaleString('en')  + "</span>" }));
         app.TestSwitch3.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch3.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch3.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
         else if (HispPopPctLayerVisible == false && Button3.checked == true) {         
         app.TestSwitch6.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong> "  + objectIds.length}));
+        document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch6.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch6.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch6.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -430,14 +432,14 @@ var IncomeFilter = {
        
         if (BroadbandSpeedLayer == true && Button2.checked == true){
         app.TestSwitch2.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+             document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds.length).toLocaleString('en')  + "</span>" }));
         app.TestSwitch2.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch2.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch2.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
         else if (BroadbandSpeedLayer == false && Button2.checked == true) {         
         app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+        document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch5.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch5.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch5.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -445,14 +447,14 @@ var IncomeFilter = {
        
         if (PopDensityLayerVisible == true && Button4.checked == true){
         app.TestSwitch8.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed:</strong>"  + objectIds.length}));
+             document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds.length).toLocaleString('en')  + "</span>" }));
         app.TestSwitch8.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch8.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch8.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
         else if (PopDensityLayerVisible == false && Button4.checked == true) {         
         app.TestSwitch7.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong>"  + objectIds.length}));
+        document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch7.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch7.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch7.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -558,29 +560,22 @@ var IncomeFilter = {
      T_queryAvgBroadbandSpeed.spatialRelationship = Query.SPATIAL_REL_CONTAINS
      T_queryAvgBroadbandSpeed.outStatistics = [T_AvgBroadbandSpeedDef];
         
-        function getStats(results){
-        var stats = results.features[0].attributes;
-        document.getElementById("SummaryText2").innerHTML = "<strong>Total Population in Area Displayed: </strong>" + stats.TotPop;};
-        
-        function getTotalLatinoPopulation(results2){
-        var stats = results2.features[0].attributes;
-        document.getElementById("SummaryText3").innerHTML = "<strong>Total Latino Population in Area Displayed: </strong>" + stats.CountyTotLatPop};
         
         function getAverageBroadbandSpeed(results3){
         var stats = results3.features[0].attributes;
-        document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed in Area Displayed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);};
+        document.getElementById("SummaryText4").innerHTML = "<strong>Average Broadband Speed: </strong>" +  stats.CountyAvgBroadbandSpeed.toFixed(2);};
 
         
         if (HispPopLoadLayerVisible == true && Button1.checked == true){
         app.TestSwitch.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Counties Displayed: </strong>"  + objectIds.length}));
+     document.getElementById("SummaryText").innerHTML = "<strong> Counties Displayed: </strong>"  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds.length).toLocaleString('en')  + "</span>" }));
         app.TestSwitch.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
         }
         else if (HispPopLoadLayerVisible == false && Button1.checked == true) {         
         app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+        document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch4.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch4.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch4.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -595,7 +590,7 @@ var IncomeFilter = {
         }
         else if (HispPopPctLayerVisible == false && Button3.checked == true) {         
         app.TestSwitch6.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong> "  + objectIds.length}));
+        document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch6.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch6.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch6.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -610,7 +605,7 @@ var IncomeFilter = {
         }
         else if (BroadbandSpeedLayer == false && Button2.checked == true) {         
         app.TestSwitch5.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed: </strong>"  + objectIds.length}));
+        document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch5.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch5.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch5.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -625,7 +620,7 @@ var IncomeFilter = {
         }
         else if (PopDensityLayerVisible == false && Button4.checked == true) {         
         app.TestSwitch7.queryIds(queryCount, lang.hitch(this, function(objectIds) {  
-        document.getElementById("SummaryText").innerHTML = "<strong>Tracts Displayed:</strong>"  + objectIds.length}));
+        document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"}));
         app.TestSwitch7.queryFeatures(C_queryPopSum, getStats);
         app.TestSwitch7.queryFeatures(C_queryLatPopSum, getTotalLatinoPopulation);
         app.TestSwitch7.queryFeatures(T_queryAvgBroadbandSpeed, getAverageBroadbandSpeed);
@@ -900,9 +895,12 @@ var IncomeFilter = {
     
      //  Population Density Button Speed Button
      Button4.addEventListener('click', function(e){
+     
+     app.outFields.push('RUCC')
+     app.outFields.push('RUCA')
+
 
      // Remove Unwanted Layers
-     app.outFields = ["RUCC"];
      app.map.removeLayer(app.TestSwitch2);
      app.map.removeLayer(app.TestSwitch);
      app.map.removeLayer(app.TestSwitch4);
@@ -911,25 +909,31 @@ var IncomeFilter = {
      app.map.removeLayer(app.TestSwitch6);
 
     // Add Desired Layers and Refresh Them
-    console.log('Button4 Has been Clicked');
+
+     
      app.map.addLayer(app.TestSwitch7);
      app.map.addLayer(app.TestSwitch8);
-     console.log('Button4 Has been Clicked');
      app.legend.refresh();
      app.TestSwitch7.refresh();
-     app.TestSwitch8.refresh();
+     app.TestSwitch8.refresh(); 
 
-    // Add Fill Symbol and Color It for Counties
-     var symbol = new SimpleFillSymbol();
-     symbol.setColor(new Color([150, 150, 150, 0.5]));
+     
+     var symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+     new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+     new Color([255,0,0]), 2),new Color([255,255,0,0.25])
+  );
+    
+
     
     // Set Break Values and Color Values for Counties 
      var classDef = new UniqueValueRenderer(symbol, "RUCC");
      classDef.addValue("Rural", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)")));
      classDef.addValue("Suburban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)")));
      classDef.addValue("Urban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)")));
+
+     
      classDef.defaultLabel = null;
-     classDef.defaultSymbol = null;
+     classDef.defaultSymbol = null; 
 
 
     // Apply Breaks and Color Values to the Renderer and Apply the Renderer to the Layer
@@ -938,6 +942,7 @@ var IncomeFilter = {
    
     // Change the Legend and Summary Statistics When Counties/Tracts are Displayed
      app.map.on("extent-change", function(e) {
+     app.outFields.push('RUCA')
      var currentScale = app.map.getScale();
      var CountyLayerVisible = app.TestSwitch8.visibleAtMapScale;
      if  (CountyLayerVisible == true && Button4.checked == true){
@@ -958,6 +963,7 @@ var IncomeFilter = {
      app.legend.layerInfos[0].layer = app.TestSwitch8;
      app.legend.refresh()}
      else {
+     app.map.addLayer(app.TestSwitch7);
      app.legend.layerInfos[0].layer = app.TestSwitch7;
      app.legend.refresh()};
 
@@ -967,20 +973,19 @@ var IncomeFilter = {
 
    // Set Break Values and Color Values for Tracts 
      var classDef2 = new UniqueValueRenderer(symbol, "RUCA");
-     classDef2.addValue("Rural", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)")));
-     classDef2.addValue("Suburban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)")));
-     classDef2.addValue("Urban", new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)")));;
      classDef2.defaultLabel = null;
      classDef2.defaultSymbol = null;
 
-   // Set Default Values to Null. This prevents 'others' from auto-rendering as a null category
-     classDef2.defaultLabel = null;
-     classDef2.defaultSymbol = null;
-     
+    classDef2.addValue({value: "3",symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(255,235,214)")),label: "Rural"});
+    classDef2.addValue({value: "2",symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(224,132,101)")),label: "Suburban"});
+    classDef2.addValue({value: "1",symbol: new SimpleFillSymbol().setColor(new Color.fromRgb("rgb(196,10,10)")),label: "Urban"});
+
+
+
    //Apply colors to renderer, apply renderer to layer, refersh layer.  
      app.TestSwitch7.setRenderer(classDef2);
      app.TestSwitch7.redraw();
-
+     console.log(app.TestSwitch7)
     });
 
     
@@ -1039,16 +1044,6 @@ var IncomeFilter = {
      classDef2.defaultSymbol = null;
      app.TestSwitch4.setRenderer(classDef2);
      app.TestSwitch4.redraw();
-     
-     
-
-
-
-
-     
-         // Get Number of Counties or Tracts After Page Load and on Extent Change Event For TestSwitch
-         // Get Summary Statistics for Counties or Tracts after Page Load and on Change Event For TestSwitch
-     
      
      
 
@@ -1382,8 +1377,8 @@ var IncomeFilter = {
          text: ""
          },
         legend: {
-			   maxWidth: 350,
-			   itemWidth: 120},
+         maxWidth: 350,
+         itemWidth: 120},
          data: [{
          type: "pie",
          indexLabel: "{name}",
@@ -1448,7 +1443,7 @@ else if ((HispPopLoadLayerVisible == false && Button1.checked == true) ||
      queryCount.where = '1=1';
      queryCount.spatialRelationship = Query.SPATIAL_REL_CONTAINS;  
      app.TestSwitch4.queryIds(queryCount, lang.hitch(this, function(objectIds2) {  
-     document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + objectIds2.length 
+     document.getElementById("SummaryText").innerHTML = "<strong> Tracts Displayed: </strong>  "  + "<span style='font-weight:bold; font-size:100%; color:Crimson'>" + (objectIds2.length).toLocaleString('en')  + "</span>"
      
      app.TestSwitch4.queryFeatures(T_queryPopSum, getStats);
      app.TestSwitch4.queryFeatures(T_queryLatPopSum, getTotalLatinoPopulation);
