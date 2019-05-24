@@ -113,7 +113,7 @@
         z-index: 40;
         background: #D3D3D3;
         color: #444;
-        width: 200px;
+        width: 210px;
         left: 70px;
         top: 355px;
         -moz-box-shadow: 0 0 10px #888;
@@ -124,21 +124,19 @@
         border-style: solid;
       }
       
-      
-      
-      #feedback3 {
+         #feedback3 {
         border-radius: 10px;
         position: fixed;
-        height: 350px;
+        height: 480;
         font-family: arial;
         margin: 0px;
         padding: 10px;
         z-index: 40;
         background: #D3D3D3;
         color: #444;
-        width: 260px;
-        right: 5px;
-        top: 480px;
+        width: 210px;
+        left: 70px;
+        top: 619px;
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
@@ -146,7 +144,9 @@
         border-width: 2px;
         border-style: solid;
       }
-      
+    
+    
+    
       
        #SummaryText {
         border-radius: 10px;
@@ -158,7 +158,7 @@
         z-index: 40;
         background: #D3D3D3;
         color: #444;
-        width: 200px;
+        width: 240px;
         left: 490px;
         top: 72px;
         -moz-box-shadow: 0 0 10px #888;
@@ -236,7 +236,7 @@
         z-index: 40;
         background: #D3D3D3;
         color: #444;
-        width: 950px;
+        width: 1100px;
         left: 300px;
         bottom: 38px;
         -moz-box-shadow: 0px 0px 10px #444;
@@ -249,10 +249,6 @@
       }
 
 
-     #TableSwitch{
-       position: fixed;
-       left: 330px;
-     }
      
      
      #search {
@@ -260,7 +256,7 @@
          position: fixed;
          z-index: 2;
          top: 22px;
-         left: 1200px;
+         left: 1100px;
       }
    
    
@@ -294,6 +290,7 @@
         </head>
       
       
+      
 <body class="tundra">
     <div data-dojo-type="dijit.layout.BorderContainer"
          data-dojo-props="design:'headline',gutters:false"
@@ -324,7 +321,7 @@
              
              
              </div>  <strong> Hispanic Population Percent: </strong>
-           <select id="Income"></select>
+           <input type="text" id="PercentFrom" value="0" size="1"> to <input type="text" id="PercentTo" value="100" size="1">
            </div>
           <br> <div>
                <strong>Broadband Speed: </strong>
@@ -338,8 +335,7 @@
           <div>
             <button id="filterButton">Filter</button> 
             &nbsp <button id="resetButton">Reset</button>
-<!--        <button id="HideData" onclick = "HideandShow2()">Hide Data</button>
-            <button id="GetData" onclick ="HideandShow1()">Display Data</button> -->
+
             
         <div id ="TableSwitch" class="onoffswitch">
     <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked onclick = "HideAndShowTable()">
@@ -359,18 +355,19 @@
     <div id="feedback2" class="esriLegendRelationshipLabel">
     <div id="legendWrapper"></div>  
     </div>
-    
-  <div id="HomeButton"></div>
+
+ <div id="HomeButton"></div>
  <div id="SummaryText"></div>
  <div id="SummaryText4"></div>
-  <div id="Table2"></div> 
+ <div id="Table2"></div> 
  <div id="PieChart1"></div>
  <div id="PieChart2"></div>
  <div id="search"></div>
 
- 
 
 
+
+ <div id="feedback3"> <button id="ZoomTo">Zoom To</button> <select id='Locations'> </select></div>
  
 
  
