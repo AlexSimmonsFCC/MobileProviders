@@ -1415,7 +1415,7 @@ var ZoomToList = {
     
     
      
-/*      app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
+      app.TestSwitch.queryFeatures(C_queryLatPopSum).then(function(e){
          console.log(e.features[0].attributes.CountyTotLatPop)
          console.log(e.features[0].attributes.TotPop)
          getTotalLatinoPopulation;
@@ -1444,7 +1444,7 @@ var ZoomToList = {
          {y: e.features[0].attributes.CountyTotLatPop, name: "Hispanic Population"},
          {y: e.features[0].attributes.TotPop, name: "Non-Hispanic Population"}
          ]}]});
-         chart.render();}) */
+         chart.render();}) 
      
      
      
