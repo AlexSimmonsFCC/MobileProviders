@@ -2,89 +2,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-   <title>Advertised Broadband Speeds and Latino Demography Viewer</title>
-  <link rel="stylesheet" href="//js.arcgis.com/3.27/dijit/themes/claro/claro.css">
-  <link rel="stylesheet" href="//js.arcgis.com/3.27/esri/css/esri.css">
- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
- <script src="//js.arcgis.com/3.27/"></script>
- <script src="app.js"></script>
-
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Verizon Diversions</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.27/dijit/themes/tundra/tundra.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.27/esri/css/esri.css">
     
     <style>
       html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
       #map{ margin: 0; padding: 0; }
-      
-  .esriLegendRelationshipLabel {
-  font-size: 12px;
-  color: "#3812d1";
-  padding: 0px 0px;
-  font-family: "Arial";
-  border-color: orange;
-}  
-
-.onoffswitch {
-    position: fixed; width: 130px; left: 290px; top: 295px;
-    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-}
-.onoffswitch-checkbox {
-    display: none;
-}
-.onoffswitch-label {
-    display: block; overflow: hidden; cursor: pointer;
-    border: 2px solid #212223; border-radius: 20px;
-}
-.onoffswitch-inner {
-    display: block; width: 200%; margin-left: -100%;
-    transition: margin 0.3s ease-in 0s;
-}
-.onoffswitch-inner:before, .onoffswitch-inner:after {
-    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
-    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-    box-sizing: border-box;
-}
-.onoffswitch-inner:before {
-    content: "SHOW DATA";
-    padding-left: 10px;
-    background-color: #34A7C1; color: #FFFFFF;
-}
-.onoffswitch-inner:after {
-    content: "HIDE DATA";
-    padding-right: 10px;
-    background-color: #EEEEEE; color: #222326;
-    text-align: right;
-}
-.onoffswitch-switch {
-    display: block; width: 18px; margin: 6px;
-    background: #FFFFFF;
-    position: absolute; top: 0; bottom: 0;
-    right: 95px;
-    border: 2px solid #212223; border-radius: 20px;
-    transition: all 0.3s ease-in 0s; 
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-    margin-left: 0;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px; 
-}
-
-
-
-      
-    #HomeButton {
-      position: fixed;
-      top: 95px;
-      left: 20px;
-      z-index: 50;
-    }
-    
-
-        #feedback {
+      #feedback {
         border-radius: 10px;
-        position: fixed;
+        position: absolute;
         height: 480;
         font-family: arial;
         margin: 5px;
@@ -92,188 +21,48 @@
         z-index: 40;
         background: #D3D3D3;
         color: #444;
-        width: 390px;
-        left: 65px;
-        top: 15px;
+        width: 300px;
+        left: 30px;
+        top: 30px;
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
-        border-color: #212223;
-        border-width: 2px;
-        border-style: solid;
       }
-    
-   #feedback2 {
+      
+        #DownloadWindow {
         border-radius: 10px;
-        position: fixed;
+        position: absolute;
         height: 480;
         font-family: arial;
-        margin: 0px;
+        margin: 5px;
         padding: 10px;
         z-index: 40;
         background: #D3D3D3;
         color: #444;
-        width: 210px;
-        left: 70px;
-        top: 355px;
+        width: 300px;
+        left: -0px;
+        top: 125px;
         -moz-box-shadow: 0 0 10px #888;
         -webkit-box-shadow: 0 0 10px #888;
         box-shadow: 0 0 10px #888;
-        border-color: #212223;
-        border-width: 2px;
-        border-style: solid;
       }
       
-         #feedback3 {
-        border-radius: 10px;
-        position: fixed;
-        height: 480;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        background: #D3D3D3;
-        color: #444;
-        width: 210px;
-        left: 70px;
-        top: 619px;
-        -moz-box-shadow: 0 0 10px #888;
-        -webkit-box-shadow: 0 0 10px #888;
-        box-shadow: 0 0 10px #888;
-        border-color: #212223;
-        border-width: 2px;
-        border-style: solid;
-      }
-    
-    
-    
       
-       #SummaryText {
-        border-radius: 10px;
-        position: fixed;
-        height: 20px;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        background: #D3D3D3;
-        color: #444;
-        width: 240px;
-        left: 490px;
-        top: 72px;
-        -moz-box-shadow: 0 0 10px #888;
-        -webkit-box-shadow: 0 0 10px #888;
-        box-shadow: 0 0 10px #888;
-        text-align: left;
-        border-color: #212223;
-        border-width: 2px;
-        border-style: solid;
-      }
       
-
-      #SummaryText4 {
-        border-radius: 10px;
-        position: fixed;
-        height: 20px;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        background: #D3D3D3;
-        color: #444;
-        width: 320px;
-        left: 490px;
-        top: 22px;
-        -moz-box-shadow: 0 0 10px #888;
-        -webkit-box-shadow: 0 0 10px #888;
-        box-shadow: 0 0 10px #888;
-        text-align: left;
-        border-color: #212223;
-        border-width: 2px;
-        border-style: solid;
-      }
       
-  #PieChart1 {
-        border-radius: 10px;
-        position: fixed;
-        height: 175px;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        color: #444;
-        width: 280px;
-        right: 5px;
-        bottom: 60px;
-      }
-
-     
-     
-    #PieChart2 {
-        border-radius: 10px;
-        position: fixed;
-        height: 175px;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        color: #444;
-        width: 280px;
-        right: 5px;
-        bottom: 243px;
-      }
-     
-     
-
-
-          #Table2 {
-        border-radius: 10px;
-        position: fixed;
-        height: 210px;
-        font-family: arial;
-        margin: 0px;
-        padding: 10px;
-        z-index: 40;
-        background: #D3D3D3;
-        color: #444;
-        width: 1100px;
-        left: 300px;
-        bottom: 38px;
-        -moz-box-shadow: 0px 0px 10px #444;
-        -webkit-box-shadow: 0px 0px 10px #444;
-        box-shadow: 0px 0px 10px #444;
-        text-align: left;
-        border-color: #212223;
-        border-width: 2px;
-        border-style: solid;
-      }
-
-
-     
-     
-     #search {
-         display: block;
-         position: fixed;
-         z-index: 2;
-         top: 22px;
-         left: 1100px;
-      }
-   
-   
-
+      
+      
+      
       #county { 
         padding: 5px 0 0 0;
         font-weight: 700;
-        }
-      #legendWrapper { padding: 0px 0 0 0; }
+      }
+      #legendWrapper { padding: 20px 0 0 0; }
       #yearWrapper { padding: 20px 0 0 0; }
       #monthWrapper { padding: 20px 0 0 0; }
       #note { font-size: 80%; font-weight: 700; padding: 0 0 10px 0; }
       h3 { margin: 0 0 5px 0; border-bottom: 1px solid #444; }
     </style>
-        
-        
-        
         
         
     <script>
@@ -284,11 +73,11 @@
   };
 </script>    
     
+<script src="https://js.arcgis.com/3.29/"></script>
+    <script src="js/app.js"></script>
     
 
-
         </head>
-      
       
       
 <body class="tundra">
@@ -299,98 +88,36 @@
            data-dojo-type="dijit.layout.ContentPane"
            data-dojo-props="region:'center'">
 
-        <div id="feedback">
-          <h3>Broadband Speed and Latino Demography</h3>
+
+
+       <div id="feedback">
+          <h3>Mobile Providers</h3>
           <div id="info">
-      <input type="radio" id="B1" name="Button" value="B1" checked> <label for="B1">Hispanic Population</label>
-      <br><input type="radio" id="B3" name="Button" value="B3"> <label for="B3">Hispanic Population Percent</label>
-      <br><input type="radio" id="B2" name="Button" value="B2"> <label for="B2">Broadband Speed (Mbp/s)</label>
-      <br><input type="radio" id="B4" name="Button" value="B4"> <label for="B4">Population Density</label>
             <div id="note">
             </div>
+            <div>
+           <strong>Select a State: </strong>
+           <select id="States"></select><br> <br>
+           <button id="GetMobileProviders">Show Mobile Providers</button> 
+          </div>
+
 <div>
-          </div>
-          
 
-          <div>
-           <strong>Hispanic Population:</strong>
-           <select id="HispPop"></select>
-       
-           </div>
-             <div id="monthWrapper">
-             
-             
-             </div>  <strong> Hispanic Population Percent: </strong>
-           <input type="text" id="PercentFrom" value="0" size="1"> to <input type="text" id="PercentTo" value="100" size="1">
-           </div>
-          <br> <div>
-               <strong>Broadband Speed: </strong>
-           <select id="BroadbandSpeed"></select>
-           <br/>
-            <br> <div>
-               <strong>Population Density: </strong>
-           <select id="PopDensity"></select>
-           <br/>
-          <br/>
-          <div>
-            <button id="filterButton">Filter</button> 
-            &nbsp <button id="resetButton">Reset</button>
-
-            
-        <div id ="TableSwitch" class="onoffswitch">
-    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked onclick = "HideAndShowTable()">
-    <label class="onoffswitch-label" for="myonoffswitch">
-        <span class="onoffswitch-inner"></span>
-        <span class="onoffswitch-switch"></span>
-    </label>
-</div>
-          </div>
-          <br>
-          
-        </div>
       </div>
     </div>
-    
-    
-    <div id="feedback2" class="esriLegendRelationshipLabel">
-    <div id="legendWrapper"></div>  
-    </div>
 
- <div id="HomeButton"></div>
- <div id="SummaryText"></div>
- <div id="SummaryText4"></div>
- <div id="Table2"></div> 
- <div id="PieChart1"></div>
- <div id="PieChart2"></div>
- <div id="search"></div>
+<div id="DownloadWindow"><h4>Providers in Selected State:</h4>
+<div id="ProviderList"><h4></h4>
+</div>
+
+<div id="DownloadWindow2"><h5>Download .shp Files for Providers in Selected State:</h5>
+<a href="/embed/s/u2uzztevjfqb5p7e61yu067t8ym97rlh/file/477301545905" download class="item-name-link">T-Mobile</a>
+<div id="DownloadList"><h4></h4>
+
+</div>
 
 
 
 
- <div id="feedback3"> <button id="ZoomTo">Zoom To</button> <select id='Locations'> </select></div>
- 
 
- 
-  <script>
-  
-   
-   
-    function HideAndShowTable () {
-     var checkBox = document.getElementById("myonoffswitch"); 
-     if (checkBox.checked == true){
-    document.getElementById("Table2").style.display = "none";
-    console.log(checkBox.checked)
-     } else if (checkBox.checked == false){
-     document.getElementById("Table2").style.display = "block";
-     console.log(checkBox.checked)
-     }
-   } 
-   
-   
-   
-   </script>   
 
- 
- 
-
-    
