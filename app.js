@@ -88,9 +88,7 @@ var ProviderSelect = document.getElementById("ProviderSelect");
 var ProviderList = {
     'null' : 'Select a Provider...',
     'Carolina West Wireless' : 'Carolina West Wireless',
-    'VerizonWireless' : 'Verizon',
-    'Sprint < 400'  : 'Sprint',
-    'T-Mobile'  : 'T-Mobile'
+    'VerizonWireless' : 'Verizon Wireless'
 }
 for(index in ProviderList) {
     ProviderSelect.options[ProviderSelect.options.length] = new Option(ProviderList[index], index);
@@ -100,15 +98,8 @@ for(index in ProviderList) {
 var TechnologySelect = document.getElementById("TechnologySelect")
 
 var TechnologyList = {
-    80 : 'WCDMA/UMTS/HSPA',
-    81 : 'HSPA+',
     82 : 'EVDO/EVDO Rev A',
-    83 : 'LTE',
-    84 : 'WiMAX',
-    85 : 'CDMA',
-    86 : 'GSM',
-    87 : 'Analog',
-    88 : 'Other'
+    83 : 'LTE'
 }
 for(index in TechnologyList) {
     TechnologySelect.options[TechnologySelect.options.length] = new Option(TechnologyList[index], index);
